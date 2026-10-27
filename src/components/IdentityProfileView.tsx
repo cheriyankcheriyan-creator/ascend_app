@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { AssessmentResult, RecommendedCareer } from '../types';
 import confetti from 'canvas-confetti';
+import { CharacteristicsChart } from './CharacteristicsChart';
+import { calculateCharacteristicsScores } from '../utils/scoring';
 
 interface IdentityProfileViewProps {
   result: AssessmentResult;
@@ -80,6 +82,14 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
   const coreValues = result.coreValues || ['Creative Autonomy', 'Human Compassion', 'Lifelong Mastery'];
   const skillsToDevelop = result.skillsToDevelop || ['Portfolio Curation', 'Domain Fundamentals', 'Cross-Disciplinary Synthesis'];
   const alternativePaths = result.alternativePaths || [];
+
+  const characteristics = (result.characteristics && result.characteristics.length > 0)
+    ? result.characteristics
+    : calculateCharacteristicsScores({}, undefined, {
+        archetype: result.archetype,
+        strongestInterestAreas: result.strongestInterestAreas,
+        riasecScores: result.riasecScores
+      });
 
   return (
     <div className="space-y-8 animate-fade-in text-slate-800">
@@ -147,7 +157,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
               className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Retake 25 Questions</span>
+              <span>Retake 15 Questions</span>
             </button>
           </div>
         </div>
@@ -183,6 +193,9 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* 1. Personalized Characteristics Analysis Chart */}
+      <CharacteristicsChart characteristics={characteristics} />
 
       {/* Grid: What You Genuinely Love & Flexible Thinking Style */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

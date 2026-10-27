@@ -365,12 +365,14 @@ export const StudentProfileView: React.FC<StudentProfileViewProps> = ({
 
                 <div className="space-y-1 text-xs border-t border-slate-200 pt-2 text-slate-600">
                   <div className="flex justify-between">
-                    <span>In-State:</span>
-                    <span className="text-slate-900 font-bold">${college.tuitionInState.toLocaleString()}</span>
+                    <span>Merit Fee:</span>
+                    <span className="text-slate-900 font-bold">{college.tuitionDisplayINR || `₹${college.tuitionInState.toLocaleString('en-IN')}`}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Starting Salary:</span>
-                    <span className="text-indigo-700 font-bold">${college.medianStartingSalary.toLocaleString()}</span>
+                    <span className="text-emerald-700 font-bold">
+                      {college.salaryDisplayINR || (college.medianStartingSalary > 0 ? `₹${(college.medianStartingSalary / 100000).toFixed(1)} LPA` : 'Info unavailable')}
+                    </span>
                   </div>
                 </div>
               </div>

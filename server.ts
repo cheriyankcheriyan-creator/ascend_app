@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { COLLEGES_DATA, COURSES_DATA, INTERNSHIPS_DATA, ASSESSMENT_QUESTIONS } from './src/data/mockData.ts';
+import { calculateCharacteristicsScores } from './src/utils/scoring.ts';
 
 dotenv.config();
 
@@ -132,7 +133,7 @@ app.post('/api/ai/assess', async (req, res) => {
     if (ai) {
       try {
         const prompt = `You are an elite, domain-neutral student career counselor and cognitive mentor.
-A student (${studentInfo?.name || 'Student'}, ${studentInfo?.educationLevel || 'High School / Early College'}) completed a comprehensive 25-question assessment evaluating their genuine interests, academic preferences, creative expression, thinking style, core values, and future aspirations.
+A student (${studentInfo?.name || 'Student'}, ${studentInfo?.educationLevel || 'High School / Early College'}) completed a comprehensive 15-question assessment evaluating their genuine interests, academic preferences, creative expression, thinking style, core values, and future aspirations.
 
 Student Responses:
 ${JSON.stringify(answers, null, 2)}
@@ -343,10 +344,15 @@ CORE PRINCIPLES (CRITICAL):
 
         if (response.text) {
           const parsed = JSON.parse(response.text);
+          const characteristics = calculateCharacteristicsScores(answers, customNotes);
           return res.json({
             success: true,
             result: {
               ...parsed,
+              characteristics,
+              topCharacteristics: characteristics.filter(c => c.level === 'strongest').map(c => c.dimension),
+              moderateCharacteristics: characteristics.filter(c => c.level === 'moderate').map(c => c.dimension),
+              developingCharacteristics: characteristics.filter(c => c.level === 'developing').map(c => c.dimension),
               id: 'res_' + Date.now(),
               completedAt: new Date().toISOString()
             }
@@ -359,7 +365,17 @@ CORE PRINCIPLES (CRITICAL):
 
     // Heuristic synthesis fallback with full fields
     const heuristicResult = generateHeuristicAssessment(answers, customNotes, studentInfo);
-    return res.json({ success: true, result: heuristicResult });
+    const characteristics = calculateCharacteristicsScores(answers, customNotes);
+    return res.json({
+      success: true,
+      result: {
+        ...heuristicResult,
+        characteristics,
+        topCharacteristics: characteristics.filter(c => c.level === 'strongest').map(c => c.dimension),
+        moderateCharacteristics: characteristics.filter(c => c.level === 'moderate').map(c => c.dimension),
+        developingCharacteristics: characteristics.filter(c => c.level === 'developing').map(c => c.dimension)
+      }
+    });
   } catch (error) {
     console.error('Assessment generation error:', error);
     res.status(500).json({ error: 'Failed to process assessment' });

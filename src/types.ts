@@ -48,10 +48,39 @@ export interface AssessmentQuestion {
   }[];
 }
 
+export type CharacteristicDimension =
+  | 'Builder'
+  | 'Intellectual'
+  | 'Creative'
+  | 'Social'
+  | 'Entrepreneurial'
+  | 'Organizational'
+  | 'Investigative'
+  | 'Leadership'
+  | 'Practical'
+  | 'Empathetic';
+
+export interface CharacteristicScore {
+  dimension: CharacteristicDimension;
+  score: number; // 0-100
+  level: 'strongest' | 'moderate' | 'developing' | 'inconclusive';
+  tagline: string;
+  description: string;
+  sampleActivities: string[];
+  careerAlignment: string[];
+  developmentAdvice: string;
+}
+
 export interface AssessmentResult {
   id: string;
   completedAt: string;
   
+  // 10 Core Personalized Characteristics
+  characteristics?: CharacteristicScore[];
+  topCharacteristics?: CharacteristicDimension[];
+  moderateCharacteristics?: CharacteristicDimension[];
+  developingCharacteristics?: CharacteristicDimension[];
+
   // Refined individual identity & multi-domain genuine interests
   archetype: string;
   archetypeTagline: string;
@@ -164,20 +193,54 @@ export interface CollegeReview {
   };
 }
 
+export interface CollegeCourseInfo {
+  code?: string;
+  name: string;
+  degree: string;
+  duration: string;
+  stream: 'Engineering & Technology' | 'Sciences' | 'Arts & Humanities' | 'Commerce & Management' | 'Medicine & Allied Health' | 'Law' | 'Design & Media' | 'Agriculture';
+  eligibility: string;
+  seats?: number | string;
+  annualFeeINR?: string;
+  admissionRoute: string;
+}
+
+export type KeralaDistrict =
+  | 'Thiruvananthapuram'
+  | 'Kollam'
+  | 'Pathanamthitta'
+  | 'Alappuzha'
+  | 'Kottayam'
+  | 'Idukki'
+  | 'Ernakulam'
+  | 'Thrissur'
+  | 'Palakkad'
+  | 'Malappuram'
+  | 'Kozhikode'
+  | 'Wayanad'
+  | 'Kannur'
+  | 'Kasaragod';
+
 export interface College {
   id: string;
   name: string;
   shortName: string;
   location: string;
+  district?: KeralaDistrict | string;
   state: string;
   country: string;
   campusType: 'Urban' | 'Suburban' | 'College Town' | 'Rural';
+  institutionType?: 'Government' | 'Aided' | 'Autonomous' | 'Private / Self-Financing' | 'Institute of National Importance' | 'Central University';
+  affiliatingUniversity?: string;
   ranking: number;
   acceptanceRate: number; // percentage, e.g. 4.5
   tuitionInState: number;
   tuitionOutOfState: number;
+  tuitionDisplayINR?: string;
+  feeStructureNote?: string;
   avgFinancialAid: number;
   medianStartingSalary: number;
+  salaryDisplayINR?: string;
   studentFacultyRatio: string;
   graduationRate: number; // percentage
   image: string;
@@ -185,22 +248,33 @@ export interface College {
   bannerColor: string;
   description: string;
   popularMajors: string[];
+  courses?: CollegeCourseInfo[];
   facilities: string[];
-  alumniOutcomes: {
-    employmentRate90Days: number;
-    topEmployers: string[];
-    avg5YearSalary: number;
-  };
+  accreditation?: string;
+  nirfRank?: string;
+  officialWebsite?: string;
+  admissionPortalUrl?: string;
   admissionRequirements: {
     gpaAverage: string;
-    satRange: string;
-    actRange: string;
+    satRange?: string;
+    actRange?: string;
     applicationDeadlines: {
       earlyDecision?: string;
       regularDecision: string;
     };
     keyCriteria: string[];
+    keralaEligibility?: string;
+    entranceExams?: string[];
   };
+  alumniOutcomes: {
+    employmentRate90Days: number;
+    topEmployers: string[];
+    avg5YearSalary: number;
+    placementHighlights?: string;
+  };
+  verifiedStatus: boolean;
+  verifiedDate?: string;
+  officialSource?: string;
   reviews: CollegeReview[];
   tags: string[];
 }
