@@ -4,202 +4,1120 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
   {
     id: 'q1',
     stage: 'hobbies_activities',
-    question: 'What activities, hobbies, or projects do you find yourself doing simply because you enjoy them?',
-    subtitle: 'Think about what you do in your free time without anyone asking or grading you.',
+    category: 'Interests & Passions',
+    question: 'What activities or hobbies do you naturally find yourself doing simply because you enjoy them?',
+    subtitle: 'Think about what you do in your free time without anyone grading, judging, or asking you to do it.',
+    isMultiSelect: true,
+    maxSelect: 3,
     allowCustomInput: true,
-    customInputPlaceholder: 'Or tell us in your own words what you genuinely love doing...',
+    customInputPlaceholder: 'Or describe in your own words what you genuinely love doing...',
+    allowSkip: true,
     options: [
       {
-        label: 'Building tangible things with code, electronics, robotics, or game modding',
-        description: 'Hands-on creation, testing how parts fit together, and seeing digital or physical systems come alive',
-        value: 'building_systems',
-        tags: ['Engineering', 'Computing', 'Robotics']
+        label: 'Creative arts, visual design, sketching, photography, or music',
+        description: 'Expressing ideas through aesthetics, storytelling, instruments, or visual media',
+        value: 'creative_arts',
+        domain: 'Arts & Design',
+        tags: ['Design', 'Fine Arts', 'Music']
       },
       {
-        label: 'Exploring deep topics (science, economics, nature, history) through deep-dive videos & articles',
-        description: 'Unraveling why things happen, hunting for patterns, and satisfying intellectual curiosity',
-        value: 'exploring_knowledge',
-        tags: ['Research', 'Biotech', 'Analytics']
+        label: 'Reading deep articles, exploring history, writing stories, or journaling',
+        description: 'Immersing in narratives, examining past civilizations, and articulating thoughts',
+        value: 'reading_humanities',
+        domain: 'Humanities & Literature',
+        tags: ['Literature', 'History', 'Philosophy']
       },
       {
-        label: 'Expressing ideas through visual art, UI design, creative writing, music, or digital media',
-        description: 'Aesthetic synthesis, storytelling, and designing experiences that evoke emotional resonance',
-        value: 'creative_expression',
-        tags: ['Design', 'Media', 'UI/UX']
+        label: 'Observing nature, caring for animals, gardening, or outdoor exploration',
+        description: 'Connecting with the living environment, ecology, wildlife, and natural biology',
+        value: 'nature_wildlife',
+        domain: 'Biological & Environmental Sciences',
+        tags: ['Biology', 'Ecology', 'Outdoors']
       },
       {
-        label: 'Organizing initiatives, strategizing with peers, debating ideas, or launching student projects',
-        description: 'Persuading stakeholders, bringing people together around an idea, and driving execution',
-        value: 'initiative_leadership',
-        tags: ['Strategy', 'Entrepreneurship', 'Leadership']
+        label: 'Cooking, baking, crafting, mechanics, or woodworking hands-on',
+        description: 'Working with physical ingredients, tools, materials, and creating tangible results',
+        value: 'crafts_culinary_mechanics',
+        domain: 'Practical Crafts & Culinary',
+        tags: ['Culinary Arts', 'Craftsmanship', 'Mechanics']
       },
       {
-        label: 'Directly mentoring others, listening to personal stories, volunteering, or community support',
-        description: 'Human empathy, individual empowerment, and making someone’s day tangibly better',
-        value: 'helping_people',
-        tags: ['Healthcare', 'Education', 'Social Impact']
+        label: 'Organizing events, student clubs, volunteer drives, or social campaigns',
+        description: 'Bringing people together around a shared cause, coordinating logistics, and leading',
+        value: 'community_leadership',
+        domain: 'Public Service & Leadership',
+        tags: ['Leadership', 'Advocacy', 'Community']
+      },
+      {
+        label: 'Building projects with software, electronics, robotics, or math puzzles',
+        description: 'Tinkering with logic, experimenting with computing, and seeing systems function',
+        value: 'computing_electronics',
+        domain: 'Technology & Engineering',
+        tags: ['Computing', 'Robotics', 'Mathematics']
       }
     ]
   },
   {
     id: 'q2',
-    stage: 'deeper_curiosity',
-    question: 'When a topic or challenge deeply excites you, what is the core spark behind your fascination?',
-    subtitle: 'Looking past the surface activity into what energizes your mind.',
+    stage: 'hobbies_activities',
+    category: 'Curiosity Exploration',
+    question: 'When you voluntarily deep-dive into articles, podcasts, or videos, which topic captures your attention first?',
+    subtitle: 'Think about the rabbit holes you willingly fall down during late-night curiosity searches.',
     allowCustomInput: true,
-    customInputPlaceholder: 'What specific questions or challenges make you want to learn more?',
+    customInputPlaceholder: 'What specific topics or questions do you find yourself researching?',
+    allowSkip: true,
     options: [
       {
-        label: 'The thrill of deconstructing complex mechanisms to understand how they work under the hood',
-        description: 'First-principles curiosity, reverse engineering, and optimizing logic',
-        value: 'under_the_hood',
-        tags: ['Deep Tech', 'Systems Architecture']
+        label: 'Human psychology, why people make decisions, and interpersonal relationships',
+        description: 'Understanding emotions, cognitive biases, mental wellness, and human behavior',
+        value: 'psychology_behavior',
+        domain: 'Psychology & Behavioral Science',
+        tags: ['Psychology', 'Counseling', 'Human Behavior']
       },
       {
-        label: 'The joy of bringing an original concept from pure imagination into a working reality',
-        description: 'Zero-to-one creative agency and translating abstract inspiration into a tangible creation',
-        value: 'zero_to_one_creation',
-        tags: ['Innovation', 'Design Thinking']
+        label: 'Breakthrough medical discoveries, human physiology, and healthcare',
+        description: 'How the human body functions, combats disease, and how medicines are discovered',
+        value: 'medicine_physiology',
+        domain: 'Medicine & Healthcare',
+        tags: ['Healthcare', 'Medicine', 'Biomedical']
       },
       {
-        label: 'Finding an elegant, data-backed solution to a frustrating real-world bottleneck',
-        description: 'Empirical problem-solving, measurable efficiency gains, and quantitative clarity',
-        value: 'empirical_bottleneck',
-        tags: ['Quantitative Analysis', 'Product Strategy']
+        label: 'Inspiring architecture, interior design, fashion styling, and urban spaces',
+        description: 'How physical spaces, buildings, and aesthetic environments shape human lives',
+        value: 'architecture_spaces',
+        domain: 'Architecture & Spatial Design',
+        tags: ['Architecture', 'Urban Planning', 'Fashion']
       },
       {
-        label: 'Unlocking breakthrough scientific or ethical insights that expand human capability',
-        description: 'Pushing the boundary of what medicine, technology, or society can achieve',
-        value: 'breakthrough_discovery',
-        tags: ['Biomedical', 'Frontier AI', 'Research']
+        label: 'How economies function, stock markets, innovative businesses, and entrepreneurship',
+        description: 'Commercial ventures, financial independence, global trade, and strategic businesses',
+        value: 'business_economics',
+        domain: 'Business & Finance',
+        tags: ['Finance', 'Economics', 'Venture']
+      },
+      {
+        label: 'Legal cases, ethical dilemmas, politics, investigative journalism, and human rights',
+        description: 'Examining justice, societal fairness, constitutional law, and investigative reporting',
+        value: 'law_justice_journalism',
+        domain: 'Law, Policy & Journalism',
+        tags: ['Law', 'Public Policy', 'Journalism']
+      },
+      {
+        label: 'The cosmos, physics, geology, or evolutionary biology mysteries',
+        description: 'First-principles physics, astrophysical marvels, and scientific inquiries into existence',
+        value: 'fundamental_sciences',
+        domain: 'Physical & Natural Sciences',
+        tags: ['Physics', 'Astronomy', 'Earth Sciences']
       }
     ]
   },
   {
     id: 'q3',
-    stage: 'deeper_curiosity',
-    question: 'If you were given 6 months of complete freedom and resources, what problem would you want to tackle?',
-    subtitle: 'Your personal impulse for meaningful contribution.',
+    stage: 'hobbies_activities',
+    category: 'Flow State & Focus',
+    question: 'Think about times when hours flew by without you noticing. What kind of activity were you engaged in?',
+    subtitle: 'Your personal "zone of flow" is a powerful indicator of authentic vocational fulfillment.',
     allowCustomInput: true,
-    customInputPlaceholder: 'Describe the dream project or mission you would love to bring into the world...',
+    customInputPlaceholder: 'Describe the activity where you completely lose track of time...',
+    allowSkip: true,
     options: [
       {
-        label: 'Engineer an autonomous AI tool, robotics system, or software infrastructure that empowers millions',
-        description: 'Technical leverage, high reliability, and building tools of the future',
-        value: 'engineer_autonomous_tool',
-        tags: ['AI Software', 'Robotics Systems']
+        label: 'Writing an essay, creative story, speech, or articulating complex thoughts in words',
+        description: 'Sculpting language, refining tone, and crafting compelling narratives',
+        value: 'flow_writing',
+        domain: 'Communication & Literature',
+        tags: ['Writing', 'Storytelling', 'Communication']
       },
       {
-        label: 'Discover novel biological therapies, climate technologies, or scientific models in a lab',
-        description: 'Experimental rigor, biological health impact, and ecological sustainability',
-        value: 'scientific_health_climate',
-        tags: ['Genomics', 'CleanTech', 'Medicine']
+        label: 'Drawing, illustrating, editing video/audio, or arranging visual layouts',
+        description: 'Absorbed in visual rhythm, color palettes, typography, and aesthetic balance',
+        value: 'flow_design',
+        domain: 'Visual Arts & Media',
+        tags: ['Visual Art', 'Media Production', 'Creative Flow']
       },
       {
-        label: 'Launch a mission-driven tech company or design studio addressing unmet consumer or business needs',
-        description: 'Entrepreneurial independence, product-market fit, and team building',
-        value: 'launch_venture',
-        tags: ['Venture Creation', 'Product Leadership']
+        label: 'Listening to a friend work through a tough problem or mentoring a younger student',
+        description: 'Deep empathetic presence, clarifying perspectives, and guiding someone forward',
+        value: 'flow_mentoring',
+        domain: 'Education & Counseling',
+        tags: ['Mentorship', 'Empathy', 'Education']
       },
       {
-        label: 'Transform educational access, public healthcare equality, or civic community tools',
-        description: 'Direct human uplift, systemic societal fairness, and empathetic design',
-        value: 'societal_uplift',
-        tags: ['Public Health', 'EdTech', 'Social Innovation']
+        label: 'Tinkering with physical parts, repairing broken items, or assembling craft pieces',
+        description: 'Tactile problem-solving, understanding mechanical tolerance, and physical construction',
+        value: 'flow_tinkering',
+        domain: 'Skilled Trades & Mechanics',
+        tags: ['Craftsmanship', 'Repair', 'Hands-on']
+      },
+      {
+        label: 'Conducting an experiment, analyzing dataset tables, or solving mathematical riddles',
+        description: 'Methodical deduction, finding hidden correlations, and arriving at proof',
+        value: 'flow_analytical',
+        domain: 'Data & Mathematical Rigor',
+        tags: ['Data Analysis', 'Mathematics', 'Scientific Inquiry']
+      },
+      {
+        label: 'Planning a group event, structuring budgets, or negotiating a fair agreement',
+        description: 'Strategic orchestration, timeline management, and goal accomplishment',
+        value: 'flow_strategy',
+        domain: 'Project Management & Strategy',
+        tags: ['Coordination', 'Strategy', 'Planning']
       }
     ]
   },
   {
     id: 'q4',
-    stage: 'thinking_preferences',
-    question: 'How does your mind naturally like to explore challenges and process new ideas?',
-    subtitle: 'Understanding your flexible cognitive tendencies—not a rigid personality label.',
+    stage: 'academic_learning',
+    category: 'Academic Preferences',
+    question: 'Which school subjects or academic areas have you enjoyed most (or wished you could study deeper)?',
+    subtitle: 'Select up to 3 fields that stimulate your intellect, even if they aren’t your easiest classes.',
+    isMultiSelect: true,
+    maxSelect: 3,
     allowCustomInput: true,
-    customInputPlaceholder: 'How do you usually like to think through difficult problems?',
+    customInputPlaceholder: 'Tell us which specific academic disciplines fascinate you...',
+    allowSkip: true,
     options: [
       {
-        label: 'Structured & Evidence-Driven: Analyzing data, testing hypotheses, and finding empirical proof',
-        description: 'You appreciate objective clarity, logical consistency, and step-by-step verification',
-        value: 'structured_evidence',
-        tags: ['Analytical Rigor', 'Quantitative Modeling']
+        label: 'Literature, Creative Writing, Languages, or World History',
+        description: 'Human stories, linguistics, philosophical ideas, and cultural heritage',
+        value: 'subj_humanities',
+        domain: 'Humanities & Social Sciences',
+        tags: ['Literature', 'Languages', 'History']
       },
       {
-        label: 'Intuitive & Lateral: Connecting unexpected concepts, questioning assumptions, and imagining possibilities',
-        description: 'You see non-obvious parallels across disciplines and spark novel conceptual angles',
-        value: 'intuitive_lateral',
-        tags: ['Creative Synthesis', 'Strategic Vision']
+        label: 'Biology, Anatomy, Health Sciences, or Chemistry',
+        description: 'Living organisms, cellular mechanisms, pharmacological chemistry, and healthcare',
+        value: 'subj_biomedical',
+        domain: 'Life Sciences & Medicine',
+        tags: ['Biology', 'Chemistry', 'Anatomy']
       },
       {
-        label: 'Practical & Experimental: Jumping in, tinkering with working prototypes, and learning from trial-and-error',
-        description: 'You learn fastest through immediate hands-on friction and tactile iteration',
-        value: 'practical_experimentation',
-        tags: ['Prototyping', 'Rapid Iteration']
+        label: 'Fine Arts, Graphic Design, Film, or Theater Arts',
+        description: 'Aesthetic creation, performance, visual storytelling, and cinematic arts',
+        value: 'subj_arts_media',
+        domain: 'Creative Arts & Performing Media',
+        tags: ['Fine Arts', 'Film', 'Theater']
       },
       {
-        label: 'Human-Centered & Empathic: Examining user motivations, interpersonal dynamics, and social impact',
-        description: 'You prioritize how real humans think, feel, struggle, and thrive',
-        value: 'human_centered',
-        tags: ['Human Experience', 'Product Design']
+        label: 'Business Studies, Accounting, Economics, or Entrepreneurship',
+        description: 'Commerce, financial balance sheets, market dynamics, and organizational leadership',
+        value: 'subj_commerce',
+        domain: 'Business & Economics',
+        tags: ['Economics', 'Accounting', 'Commerce']
+      },
+      {
+        label: 'Mathematics, Physics, Engineering, or Computer Science',
+        description: 'Formal logic, calculus, physical mechanics, and quantitative computation',
+        value: 'subj_stem_physical',
+        domain: 'STEM & Physical Sciences',
+        tags: ['Physics', 'Mathematics', 'Engineering']
+      },
+      {
+        label: 'Environmental Science, Agriculture, Earth Systems, or Geography',
+        description: 'Planetary ecosystems, sustainable agriculture, climate geography, and conservation',
+        value: 'subj_environmental',
+        domain: 'Environmental Science & Agriculture',
+        tags: ['Ecology', 'Earth Science', 'Sustainability']
       }
     ]
   },
   {
     id: 'q5',
-    stage: 'thinking_preferences',
-    question: 'What work rhythm and collaboration dynamic leaves you feeling most energized?',
-    subtitle: 'How you like to structure your focus without being pigeonholed.',
+    stage: 'academic_learning',
+    category: 'Cognitive Learning Mode',
+    question: 'How do complex concepts or new ideas click most easily in your mind?',
+    subtitle: 'Understanding your individual cognitive processing style.',
+    allowCustomInput: true,
+    customInputPlaceholder: 'How do you learn best when tackling difficult material?',
+    allowSkip: false,
     options: [
       {
-        label: 'Deep Solo Immersion: Uninterrupted sanctuary time to build, write, or solve complex puzzles',
-        description: 'Peak productivity in dedicated flow state; social energy recharges best during independent crafting',
-        value: 'deep_solo_flow',
-        tags: ['Autonomous Craft', 'Deep Focus']
+        label: 'Through compelling real-world stories, human biographies, and contextual case studies',
+        description: 'You understand ideas best when anchored in real people, motivations, and historical context',
+        value: 'mode_narrative',
+        domain: 'Contextual & Narrative',
+        tags: ['Case Studies', 'Storytelling']
       },
       {
-        label: 'Balanced Rhythm: Independent building sprints punctuated by purposeful peer design reviews',
-        description: 'The sweet spot between autonomous ownership and rich, high-signal collaboration',
-        value: 'balanced_rhythm',
-        tags: ['Ambivert Builder', 'Agile Co-creation']
+        label: 'Through hands-on trial-and-error, tactile experimentation, and building models',
+        description: 'You need to physically test, touch, or assemble something to truly grasp the mechanics',
+        value: 'mode_kinesthetic',
+        domain: 'Kinesthetic & Experimental',
+        tags: ['Hands-on', 'Physical Prototyping']
       },
       {
-        label: 'Collaborative War-Rooms: Fast-paced whiteboard sessions, lively debate, and shared team energy',
-        description: 'Your best ideas spark in real-time conversation and collective momentum',
-        value: 'collaborative_momentum',
-        tags: ['Team Co-working', 'Active Dialog']
+        label: 'Through visual diagrams, flowcharts, infographics, and spatial maps',
+        description: 'You see relationships visually and organize thoughts through spatial clarity',
+        value: 'mode_visual',
+        domain: 'Visual & Spatial',
+        tags: ['Visual Learning', 'Mind-mapping']
+      },
+      {
+        label: 'Through formal step-by-step logic, mathematical formulas, and rigorous deductions',
+        description: 'You appreciate objective proof, systematic axioms, and unambiguous definitions',
+        value: 'mode_analytical',
+        domain: 'Analytical & Deductive',
+        tags: ['Formal Logic', 'Systematic Deduction']
+      },
+      {
+        label: 'Through interactive discussions, lively debates, and questioning assumptions with peers',
+        description: 'Your best insights emerge in dialogue, hearing opposing perspectives, and defending ideas',
+        value: 'mode_dialogic',
+        domain: 'Social & Collaborative',
+        tags: ['Discussion', 'Debate', 'Dialectic']
       }
     ]
   },
   {
     id: 'q6',
+    stage: 'academic_learning',
+    category: 'Meaningful Accomplishment',
+    question: 'What kind of project or assignment brings you the greatest sense of accomplishment when finished?',
+    subtitle: 'Looking at what kind of output makes you genuinely proud of your effort.',
+    allowCustomInput: true,
+    customInputPlaceholder: 'What was a past project or assignment that you felt truly proud of?',
+    allowSkip: true,
+    options: [
+      {
+        label: 'A persuasive, well-researched essay or debate speech that challenged conventional thinking',
+        description: 'Rigorous research, critical analysis, and powerful rhetorical clarity',
+        value: 'output_essay_critique',
+        domain: 'Humanities & Advocacy',
+        tags: ['Critical Writing', 'Rhetoric']
+      },
+      {
+        label: 'A creative portfolio piece, artwork, film, or original story that moved an audience',
+        description: 'Original aesthetic vision, emotional resonance, and creative craftsmanship',
+        value: 'output_creative_work',
+        domain: 'Creative Arts',
+        tags: ['Artistic Output', 'Originality']
+      },
+      {
+        label: 'A working physical device, prototype, scientific lab experiment, or functional model',
+        description: 'Empirical verification, physical construction, and seeing theory perform in reality',
+        value: 'output_functional_model',
+        domain: 'Engineering & Science',
+        tags: ['Prototyping', 'Experimentation']
+      },
+      {
+        label: 'A comprehensive business proposal, marketing campaign, or financial forecast',
+        description: 'Commercial viability, market opportunity analysis, and strategic roadmap',
+        value: 'output_business_plan',
+        domain: 'Business & Strategy',
+        tags: ['Business Strategy', 'Financial Model']
+      },
+      {
+        label: 'A community initiative or service project that measurably improved someone’s well-being',
+        description: 'Direct human uplift, tangible social support, and empathetic contribution',
+        value: 'output_community_impact',
+        domain: 'Social Impact & Healthcare',
+        tags: ['Human Impact', 'Community Welfare']
+      }
+    ]
+  },
+  {
+    id: 'q7',
+    stage: 'creativity_arts',
+    category: 'Creative Expression',
+    question: 'How do you most naturally express your imagination and creative voice?',
+    subtitle: 'Creativity is not limited to fine art—it exists across all disciplines.',
+    allowCustomInput: true,
+    customInputPlaceholder: 'What creative outlets or mediums feel most natural to you?',
+    allowSkip: true,
+    options: [
+      {
+        label: 'Visual aesthetics: Photography, digital illustration, graphic design, fashion, or styling',
+        description: 'Curating mood boards, visual composition, spatial balance, and aesthetic identity',
+        value: 'creative_visual',
+        domain: 'Visual Design & Aesthetics',
+        tags: ['Visual Design', 'Photography', 'Styling']
+      },
+      {
+        label: 'Written language: Fiction, investigative articles, poetry, podcast scripts, or essays',
+        description: 'Capturing nuance, expressing internal emotions, and communicating stories vividly',
+        value: 'creative_writing',
+        domain: 'Writing & Literary Arts',
+        tags: ['Creative Writing', 'Journalism', 'Podcasting']
+      },
+      {
+        label: 'Auditory and physical performance: Music, singing, theater, dance, or public speaking',
+        description: 'Embodied presence, expressive timing, sonic harmony, and audience connection',
+        value: 'creative_performance',
+        domain: 'Performing Arts & Music',
+        tags: ['Music', 'Theater', 'Public Speaking']
+      },
+      {
+        label: 'Spatial and environmental design: Architecture, landscape layouts, or physical spaces',
+        description: 'Shaping physical environments, interior balance, and architectural atmosphere',
+        value: 'creative_spatial',
+        domain: 'Architecture & Spatial Design',
+        tags: ['Architecture', 'Interior Design', 'Environment']
+      },
+      {
+        label: 'Conceptual innovation: Inventing new business ideas, social campaigns, or novel services',
+        description: 'Connecting unexpected dots to envision better ways people can live, work, and collaborate',
+        value: 'creative_venture',
+        domain: 'Entrepreneurial Innovation',
+        tags: ['Innovation', 'Campaigns', 'Venture Design']
+      }
+    ]
+  },
+  {
+    id: 'q8',
+    stage: 'creativity_arts',
+    category: 'Aesthetic & Craft Appreciation',
+    question: 'When you encounter an extraordinary human achievement, what aspect do you admire most?',
+    subtitle: 'What inspires your deepest respect in human civilization.',
+    options: [
+      {
+        label: 'The emotional depth, originality, and timeless beauty of the artistic vision',
+        description: 'Art that transcends eras, touches the human soul, and questions existence',
+        value: 'admire_beauty_art',
+        domain: 'Arts & Aesthetics',
+        tags: ['Aesthetics', 'Originality']
+      },
+      {
+        label: 'The compassionate human impact and lives saved, healed, or empowered',
+        description: 'Dedicated healthcare, courageous civil rights advocacy, and selfless public service',
+        value: 'admire_human_healing',
+        domain: 'Humanity & Public Welfare',
+        tags: ['Social Impact', 'Compassion']
+      },
+      {
+        label: 'The structural ingenuity, precision craftsmanship, and lasting physical durability',
+        description: 'Masterfully built cathedrals, precision bridges, watches, and heirloom craft',
+        value: 'admire_craftsmanship',
+        domain: 'Craftsmanship & Engineering',
+        tags: ['Ingenuity', 'Craftsmanship']
+      },
+      {
+        label: 'The commercial audacity, global scalability, and cultural transformation',
+        description: 'Transforming how billions communicate, travel, or exchange goods globally',
+        value: 'admire_scale_enterprise',
+        domain: 'Global Enterprise',
+        tags: ['Scale', 'Enterprise']
+      },
+      {
+        label: 'The pursuit of fundamental scientific truth against all skepticism',
+        description: 'Uncovering the laws of genetics, planetary motion, quantum mechanics, and deep time',
+        value: 'admire_scientific_truth',
+        domain: 'Science & Discovery',
+        tags: ['Scientific Discovery', 'Truth']
+      }
+    ]
+  },
+  {
+    id: 'q9',
+    stage: 'people_society',
+    category: 'Human Relationships',
+    question: 'In social groups, teams, or communities, which role feels most genuine and energizing to you?',
+    subtitle: 'How you naturally connect and contribute among people.',
+    options: [
+      {
+        label: 'The empathetic listener and counselor: People naturally confide in you for guidance',
+        description: 'Creating a safe emotional space, validating feelings, and offering thoughtful personal counsel',
+        value: 'role_counselor',
+        domain: 'Psychology & Counseling',
+        tags: ['Counseling', 'Empathy', 'Listening']
+      },
+      {
+        label: 'The inspiring leader or facilitator: You rally people around a common vision and purpose',
+        description: 'Articulating goals, motivating team members, assigning roles, and keeping energy high',
+        value: 'role_facilitator',
+        domain: 'Leadership & Management',
+        tags: ['Leadership', 'Team Building']
+      },
+      {
+        label: 'The educator or explainer: You love breaking down hard ideas so anyone can understand',
+        description: 'Patience, clear communication, illuminating complex concepts, and encouraging growth',
+        value: 'role_educator',
+        domain: 'Education & Pedagogy',
+        tags: ['Teaching', 'Mentorship', 'Education']
+      },
+      {
+        label: 'The perceptive observer: You study social dynamics, group motives, and cultural trends',
+        description: 'Observing unspoken body language, interpersonal undercurrents, and sociological trends',
+        value: 'role_observer',
+        domain: 'Sociology & Anthropology',
+        tags: ['Observation', 'Sociology', 'Culture']
+      },
+      {
+        label: 'The dedicated individual contributor: You collaborate best with high mutual autonomy',
+        description: 'Reliable, thoughtful peer who delivers excellent craft without needing micromanagement',
+        value: 'role_autonomous_craft',
+        domain: 'Independent Craft',
+        tags: ['Autonomy', 'Focus', 'Reliability']
+      }
+    ]
+  },
+  {
+    id: 'q10',
+    stage: 'people_society',
+    category: 'Societal Mission',
+    question: 'Which societal mission or community challenge stirs the strongest desire in you to contribute?',
+    subtitle: 'What kind of difference in the world would give your life deep meaning?',
+    allowCustomInput: true,
+    customInputPlaceholder: 'What specific human or global problem do you care most about?',
+    allowSkip: true,
+    options: [
+      {
+        label: 'Healing illness, mental health advocacy, and expanding accessible healthcare for all',
+        description: 'Curing disease, supporting mental resilience, and serving vulnerable patients',
+        value: 'mission_health_wellness',
+        domain: 'Healthcare & Wellness',
+        tags: ['Healthcare', 'Mental Health', 'Public Health']
+      },
+      {
+        label: 'Defending human rights, equal legal justice, civic transparency, and ethical governance',
+        description: 'Protecting the marginalized, upholding civil liberties, and reforming legal systems',
+        value: 'mission_law_justice',
+        domain: 'Law & Human Rights',
+        tags: ['Civil Rights', 'Legal Justice', 'Policy']
+      },
+      {
+        label: 'Protecting wild ecosystems, oceans, endangered wildlife, and reversing climate degradation',
+        description: 'Ecological conservation, biodiversity defense, renewable energy, and sustainable stewardship',
+        value: 'mission_conservation_climate',
+        domain: 'Ecology & Environmental Protection',
+        tags: ['Conservation', 'Climate Action', 'Wildlife']
+      },
+      {
+        label: 'Transforming education, coaching the next generation, and closing the opportunity gap',
+        description: 'Unlocking human potential through inspiring schools, mentorship, and youth empowerment',
+        value: 'mission_education_youth',
+        domain: 'Education & Community Uplift',
+        tags: ['Education', 'Youth Development', 'Opportunity']
+      },
+      {
+        label: 'Enriching cultural life through community arts, independent journalism, and storytelling',
+        description: 'Preserving historical memory, holding institutions accountable, and inspiring imagination',
+        value: 'mission_arts_journalism',
+        domain: 'Arts, Culture & Journalism',
+        tags: ['Journalism', 'Culture', 'Free Expression']
+      },
+      {
+        label: 'Spurring economic opportunity, ethical enterprise, and sustainable local businesses',
+        description: 'Creating jobs, fostering financial literacy, and building resilient economic infrastructure',
+        value: 'mission_economic_enterprise',
+        domain: 'Economic Development',
+        tags: ['Economics', 'Enterprise', 'Financial Literacy']
+      }
+    ]
+  },
+  {
+    id: 'q11',
+    stage: 'people_society',
+    category: 'Conflict & Persuasion',
+    question: 'When disagreements occur or tensions rise between people, what is your instinctive response?',
+    subtitle: 'Your natural conflict resolution style reveals how you interact in teams and workplaces.',
+    options: [
+      {
+        label: 'Listen deeply to emotional needs, validate feelings, and seek compassionate common ground',
+        description: 'Prioritizing relationship preservation, emotional safety, and de-escalation',
+        value: 'conflict_empathy',
+        domain: 'Mediation & Human Relations',
+        tags: ['Empathy', 'Mediation']
+      },
+      {
+        label: 'Gather objective evidence, review documented facts, and present a reasoned case',
+        description: 'Relying on truth, verifiable records, logical arguments, and fair principles',
+        value: 'conflict_evidence',
+        domain: 'Analytical & Legal',
+        tags: ['Objectivity', 'Evidence', 'Reason']
+      },
+      {
+        label: 'Propose a creative third alternative that reframes the problem so both sides win',
+        description: 'Finding non-obvious compromises, lateral problem-solving, and negotiation agility',
+        value: 'conflict_lateral',
+        domain: 'Negotiation & Diplomacy',
+        tags: ['Negotiation', 'Creative Diplomacy']
+      },
+      {
+        label: 'Stand firm on ethical principles and advocate fearlessly for what is fundamentally right',
+        description: 'Courageous moral conviction, speaking truth to power, and defending the vulnerable',
+        value: 'conflict_principled',
+        domain: 'Ethical Advocacy',
+        tags: ['Ethics', 'Advocacy', 'Integrity']
+      }
+    ]
+  },
+  {
+    id: 'q12',
+    stage: 'business_ventures',
+    category: 'Commercial Curiosity',
+    question: 'What aspect of commerce, organizations, or business enterprise interests you most?',
+    subtitle: 'Exploring how you relate to economic activity and markets.',
+    allowCustomInput: true,
+    customInputPlaceholder: 'Tell us how you view business, startups, or financial markets...',
+    allowSkip: true,
+    options: [
+      {
+        label: 'Building and launching an independent venture, studio, clinic, or brand from scratch',
+        description: 'Entrepreneurial independence, taking measured risks, and shaping an organization',
+        value: 'biz_entrepreneurship',
+        domain: 'Entrepreneurship & Venture',
+        tags: ['Startups', 'Venture Creation', 'Independence']
+      },
+      {
+        label: 'Understanding consumer psychology, branding, advertising, and cultural storytelling',
+        description: 'Why people buy, how brand identities resonate, and crafting persuasive communications',
+        value: 'biz_marketing_branding',
+        domain: 'Marketing & Brand Strategy',
+        tags: ['Marketing', 'Consumer Psychology', 'Branding']
+      },
+      {
+        label: 'Financial investments, wealth creation, macroeconomic trends, and risk management',
+        description: 'Capital allocation, financial valuation, equities, accounting, and wealth building',
+        value: 'biz_finance_markets',
+        domain: 'Finance & Investments',
+        tags: ['Finance', 'Capital Allocation', 'Markets']
+      },
+      {
+        label: 'Managing operational logistics, organizing supply chains, and leading complex projects',
+        description: 'Ensuring efficiency, managing budgets, vendor relations, and executing flawlessly',
+        value: 'biz_operations_logistics',
+        domain: 'Operations & Management',
+        tags: ['Operations', 'Logistics', 'Execution']
+      },
+      {
+        label: 'I am not primarily motivated by commercial business—I care more about public service or pure craft',
+        description: 'Driven by scientific discovery, artistic expression, healing, teaching, or non-profit missions',
+        value: 'biz_non_commercial',
+        domain: 'Public Good & Non-Commercial',
+        tags: ['Public Service', 'Pure Craft', 'Non-Profit']
+      }
+    ]
+  },
+  {
+    id: 'q13',
+    stage: 'business_ventures',
+    category: 'Advocacy & Pitching',
+    question: 'Imagine you want to convince people to support a cause, project, or service you believe in. How would you prefer to do it?',
+    subtitle: 'How you naturally share conviction and win support.',
+    options: [
+      {
+        label: 'Delivering an energetic presentation, pitch, or public speech that inspires the room',
+        description: 'Charismatic public speaking, enthusiasm, and direct emotional connection with an audience',
+        value: 'pitch_public_speaking',
+        domain: 'Public Communication',
+        tags: ['Public Speaking', 'Persuasion']
+      },
+      {
+        label: 'Writing a thorough, persuasive proposal, article, or policy paper backed by data',
+        description: 'Thoughtful written persuasion, well-structured evidence, and comprehensive arguments',
+        value: 'pitch_written_proposal',
+        domain: 'Written Advocacy',
+        tags: ['Writing', 'Policy Papers', 'Rigor']
+      },
+      {
+        label: 'Presenting a tangible working prototype, artwork, or portfolio demonstrating proof-of-concept',
+        description: 'Letting the craftsmanship speak for itself through undeniable functional demonstration',
+        value: 'pitch_prototype_demo',
+        domain: 'Demonstration & Craft',
+        tags: ['Proof of Concept', 'Portfolio']
+      },
+      {
+        label: 'Having private, one-on-one personal conversations built on deep trust and empathy',
+        description: 'Intimate relationship building, understanding personal motivations, and tailored dialog',
+        value: 'pitch_one_on_one',
+        domain: 'Interpersonal Relations',
+        tags: ['Relationship Building', 'Trust']
+      }
+    ]
+  },
+  {
+    id: 'q14',
+    stage: 'science_discovery',
+    category: 'Scientific Curiosity',
+    question: 'When you think about the natural and physical world, what questions captivate you most?',
+    subtitle: 'Scientific curiosity spans living biology, chemical reactions, ecology, and the cosmos.',
+    allowCustomInput: true,
+    customInputPlaceholder: 'What mysteries of nature or the physical world spark your curiosity?',
+    allowSkip: true,
+    options: [
+      {
+        label: 'How the human body, nervous system, genetics, and diseases function and heal',
+        description: 'Cellular biology, neuroscience, pharmacology, immunology, and regenerative medicine',
+        value: 'sci_biomedical_genetics',
+        domain: 'Biomedicine & Neuroscience',
+        tags: ['Genetics', 'Neuroscience', 'Medicine']
+      },
+      {
+        label: 'How living ecosystems, animal behavior, plant biology, and oceans sustain life',
+        description: 'Ecological food webs, marine biology, zoology, soil health, and environmental flora',
+        value: 'sci_ecology_wildlife',
+        domain: 'Ecology & Marine Biology',
+        tags: ['Ecology', 'Wildlife', 'Marine Science']
+      },
+      {
+        label: 'The fundamental laws of the cosmos: Quantum physics, chemistry, astronomy, and gravity',
+        description: 'First principles of matter, planetary motion, astrophysics, and atomic structures',
+        value: 'sci_physics_cosmology',
+        domain: 'Physics & Astronomy',
+        tags: ['Physics', 'Astronomy', 'Chemistry']
+      },
+      {
+        label: 'How mathematical equations and computational models can reveal hidden truths',
+        description: 'Statistical distributions, algorithmic modeling, topology, and predictive mathematics',
+        value: 'sci_math_modeling',
+        domain: 'Applied Mathematics',
+        tags: ['Mathematics', 'Statistics', 'Modeling']
+      },
+      {
+        label: 'I find human culture, languages, ethics, and arts more intriguing than natural sciences',
+        description: 'Humanities, literature, creative arts, and philosophical studies resonate far more',
+        value: 'sci_prefer_humanities',
+        domain: 'Humanities & Culture',
+        tags: ['Humanities', 'Culture', 'Philosophy']
+      }
+    ]
+  },
+  {
+    id: 'q15',
+    stage: 'science_discovery',
+    category: 'Investigation Setting',
+    question: 'If you were given a month to conduct an in-depth study, where would you most look forward to spending your days?',
+    subtitle: 'Your preferred physical working environment for learning and discovery.',
+    options: [
+      {
+        label: 'Out in the field: Forests, coastal oceans, mountain geology, or rural farms',
+        description: 'Observing organisms in their native habitats, collecting soil and water samples, active fieldwork',
+        value: 'setting_fieldwork',
+        domain: 'Field Research & Ecology',
+        tags: ['Fieldwork', 'Outdoors', 'Environmental']
+      },
+      {
+        label: 'In a medical clinic, hospital ward, or community health center',
+        description: 'Interacting directly with patients, observing treatments, and supporting clinical outcomes',
+        value: 'setting_clinical',
+        domain: 'Clinical Healthcare',
+        tags: ['Clinical', 'Hospital', 'Patient Care']
+      },
+      {
+        label: 'In a quiet library, museum archive, or research reading room surrounded by books',
+        description: 'Poring over historical manuscripts, rare books, archives, and philosophical literature',
+        value: 'setting_archives',
+        domain: 'Archives & Historical Research',
+        tags: ['Library', 'Archives', 'Literature']
+      },
+      {
+        label: 'In a scientific wet lab using microscopes, pipettes, centrifuges, and chemical reagents',
+        description: 'Controlled biological, chemical, or materials testing in specialized laboratory benches',
+        value: 'setting_wet_lab',
+        domain: 'Laboratory Science',
+        tags: ['Lab Science', 'Biochemistry', 'Testing']
+      },
+      {
+        label: 'In a bustling creative design studio or maker workshop with tools and materials',
+        description: 'Drafting tables, fabrication machinery, textiles, prototyping gear, and design displays',
+        value: 'setting_studio_workshop',
+        domain: 'Design Studio & Fabrication',
+        tags: ['Studio', 'Makerspace', 'Design']
+      }
+    ]
+  },
+  {
+    id: 'q16',
+    stage: 'practical_craft',
+    category: 'Hands-on & Physical Craft',
+    question: 'How important is working with your physical hands, tools, or physical materials in your ideal career?',
+    subtitle: 'Recognizing your tactile engagement preference.',
+    options: [
+      {
+        label: 'Essential: I get restless sitting all day; I need to touch, craft, build, or operate tools',
+        description: 'Culinary arts, carpentry, surgery, mechanics, agriculture, physical therapy, architecture',
+        value: 'hands_on_essential',
+        domain: 'Tactile & Practical Craft',
+        tags: ['Hands-on', 'Craft', 'Physical Engagement']
+      },
+      {
+        label: 'Balanced: I enjoy a mix of computer/desk work, physical movement, and hands-on tasks',
+        description: 'Clinical consultations, product design prototyping, architecture visits, sports coaching',
+        value: 'hands_on_balanced',
+        domain: 'Hybrid Engagement',
+        tags: ['Balanced Rhythm', 'Movement']
+      },
+      {
+        label: 'Minimal: I am happiest working primarily with ideas, language, numbers, or conversations at a desk',
+        description: 'Writing, law, financial modeling, counseling, strategy, research, and analysis',
+        value: 'hands_on_minimal',
+        domain: 'Conceptual & Desk-Based',
+        tags: ['Conceptual', 'Intellectual', 'Desk-Based']
+      }
+    ]
+  },
+  {
+    id: 'q17',
+    stage: 'practical_craft',
+    category: 'Troubleshooting Instincts',
+    question: 'When something broken or malfunctioning lands in front of you, what is your first instinct?',
+    subtitle: 'How you handle friction, breakdowns, and practical troubleshooting.',
+    options: [
+      {
+        label: 'Eagerly grab tools, open it up, and tinker directly to locate and repair the physical fault',
+        description: 'Intuitive tactile diagnosis, mechanical curiosity, and satisfaction in fixing real things',
+        value: 'fix_tinker_tools',
+        domain: 'Mechanics & Physical Repair',
+        tags: ['Repair', 'Troubleshooting', 'Mechanics']
+      },
+      {
+        label: 'Search for documentation, schematics, or video teardowns to systematically understand the defect',
+        description: 'Methodical research, step-by-step diagnostic checklists, and verified procedures',
+        value: 'fix_research_manual',
+        domain: 'Systematic Diagnosis',
+        tags: ['Manuals', 'Systematic Diagnosis']
+      },
+      {
+        label: 'Analyze whether the underlying design or workflow is flawed and propose a better alternative',
+        description: 'Root-cause system analysis, preventative redesign, and process optimization',
+        value: 'fix_redesign_process',
+        domain: 'Systems Optimization',
+        tags: ['Process Redesign', 'Systems Thinking']
+      },
+      {
+        label: 'Call upon or hire a specialist so I can channel my time into writing, creating, or helping others',
+        description: 'Focusing on your core strengths and delegating specialized repair work to experts',
+        value: 'fix_delegate_expert',
+        domain: 'Strategic Delegation',
+        tags: ['Delegation', 'Core Focus']
+      }
+    ]
+  },
+  {
+    id: 'q18',
+    stage: 'thinking_preferences',
+    category: 'Thinking & Problem-Solving',
+    question: 'How does your mind naturally navigate difficult, ambiguous problems with no obvious answer?',
+    subtitle: 'Exploring your flexible cognitive problem-solving approach.',
+    allowCustomInput: true,
+    customInputPlaceholder: 'How do you usually approach tough, confusing problems?',
+    allowSkip: false,
+    options: [
+      {
+        label: 'Intuitive & imaginative: Connecting unexpected dots, exploring possibilities, and trusting creative leaps',
+        description: 'You see parallels across disciplines, envision alternative futures, and question assumptions',
+        value: 'think_intuitive_lateral',
+        domain: 'Creative & Lateral Thinking',
+        tags: ['Intuition', 'Lateral Thinking', 'Vision']
+      },
+      {
+        label: 'Systematic & empirical: Gathering data, verifying evidence, and breaking problems into logical steps',
+        description: 'You look for statistical backing, causal clarity, logical consistency, and empirical proof',
+        value: 'think_systematic_empirical',
+        domain: 'Analytical & Empirical Thinking',
+        tags: ['Empirical', 'Logic', 'Analytical']
+      },
+      {
+        label: 'Empathetic & human-centered: Understanding how real people feel, their motives, and social context',
+        description: 'You evaluate impact through human empathy, emotional wellness, and community harmony',
+        value: 'think_empathetic_human',
+        domain: 'Human-Centered Thinking',
+        tags: ['Empathy', 'Human Impact', 'Psychology']
+      },
+      {
+        label: 'Pragmatic & action-oriented: Testing quick experiments to see what works practically right now',
+        description: 'You prefer actionable progress, rapid iteration, and learning from immediate physical feedback',
+        value: 'think_pragmatic_action',
+        domain: 'Pragmatic Experimentation',
+        tags: ['Action-Oriented', 'Pragmatism', 'Iteration']
+      }
+    ]
+  },
+  {
+    id: 'q19',
+    stage: 'thinking_preferences',
+    category: 'Decision-Making Style',
+    question: 'When you must make a major personal decision with uncertain outcomes, what gives you the greatest confidence?',
+    subtitle: 'Understanding what anchors your judgment.',
+    options: [
+      {
+        label: 'A strong internal moral compass and alignment with my core personal values',
+        description: 'Staying authentic to what you believe is ethical, honorable, and true to yourself',
+        value: 'decide_moral_values',
+        domain: 'Values-Driven',
+        tags: ['Integrity', 'Moral Compass']
+      },
+      {
+        label: 'A thorough comparison of pros and cons, probabilities, and long-term consequences',
+        description: 'Calculating risk vs reward, structuring options, and making data-informed choices',
+        value: 'decide_pros_cons_data',
+        domain: 'Quantitative & Rational',
+        tags: ['Rationality', 'Risk Assessment']
+      },
+      {
+        label: 'Deep conversations with trusted mentors, family, teachers, or close advisors',
+        description: 'Drawing wisdom from experienced guides who know your character and blind spots',
+        value: 'decide_trusted_advisors',
+        domain: 'Relational & Mentorship',
+        tags: ['Mentorship', 'Wisdom', 'Community']
+      },
+      {
+        label: 'Taking a small trial step to test the waters and learning from immediate experience',
+        description: 'Embracing manageable risk, trusting your adaptability, and adjusting course on the go',
+        value: 'decide_trial_action',
+        domain: 'Experimental Adaptability',
+        tags: ['Adaptability', 'Trial Action']
+      }
+    ]
+  },
+  {
+    id: 'q20',
+    stage: 'values_motivations',
+    category: 'Workplace Rhythm & Culture',
+    question: 'What kind of daily work setting and social rhythm would sustain your energy long-term?',
+    subtitle: 'How you thrive best day-to-day without feeling drained.',
+    options: [
+      {
+        label: 'A quiet, autonomous space where I can focus deeply with minimal interruptions',
+        description: 'Dedicated sanctuary time for writing, research, analytical modeling, or focused art',
+        value: 'env_quiet_autonomous',
+        domain: 'Deep Focus & Autonomy',
+        tags: ['Deep Focus', 'Autonomy', 'Sanctuary']
+      },
+      {
+        label: 'A lively, collaborative team environment with frequent human interaction and brainstorming',
+        description: 'Energetic war-rooms, team camaraderie, rapid feedback, and communal energy',
+        value: 'env_lively_collaborative',
+        domain: 'Collaborative & Social',
+        tags: ['Team Collaboration', 'Lively Energy']
+      },
+      {
+        label: 'A balanced rhythm: Focused independent mornings and collaborative, interactive afternoons',
+        description: 'The sweet spot between private deep work and high-signal team design sessions',
+        value: 'env_balanced_hybrid',
+        domain: 'Flexible Hybrid Rhythm',
+        tags: ['Hybrid Rhythm', 'Balanced Focus']
+      },
+      {
+        label: 'An active, on-the-move setting: Fieldwork, hospitals, travel, nature, or bustling kitchens/studios',
+        description: 'Dynamic scenery, physical mobility, changing daily challenges, and hands-on presence',
+        value: 'env_active_mobile',
+        domain: 'Mobile & On-the-Move',
+        tags: ['On-the-move', 'Fieldwork', 'Dynamic']
+      }
+    ]
+  },
+  {
+    id: 'q21',
+    stage: 'values_motivations',
+    category: 'Team Collaboration Dynamic',
+    question: 'When collaborating on a group endeavor, what contribution brings out your highest performance?',
+    subtitle: 'Where you shine when working with other people.',
+    options: [
+      {
+        label: 'Setting the overarching vision, coordinating the team, and ensuring deadlines are met',
+        description: 'Leading direction, removing bottlenecks, aligning priorities, and empowering others',
+        value: 'team_leader_coordinator',
+        domain: 'Leadership & Project Direction',
+        tags: ['Leadership', 'Coordination']
+      },
+      {
+        label: 'Producing the specialized core deliverable (writing the text, drawing the design, solving the core formula)',
+        description: 'Providing elite craftsmanship and subject-matter excellence that the team relies on',
+        value: 'team_specialist_craft',
+        domain: 'Specialist Craftsmanship',
+        tags: ['Specialist', 'Execution']
+      },
+      {
+        label: 'Ensuring team harmony, communicating clearly, resolving friction, and keeping morale high',
+        description: 'Emotional glue, empathetic listening, bridge-building, and fostering a supportive culture',
+        value: 'team_harmony_communicator',
+        domain: 'Culture & Communication',
+        tags: ['Empathy', 'Team Morale']
+      },
+      {
+        label: 'Critiquing ideas constructively, stress-testing assumptions, and identifying hidden risks',
+        description: 'Quality assurance, analytical rigor, fact-checking, and guarding against costly mistakes',
+        value: 'team_critic_analyst',
+        domain: 'Quality & Analytical Rigor',
+        tags: ['Quality Assurance', 'Rigor']
+      }
+    ]
+  },
+  {
+    id: 'q22',
+    stage: 'values_motivations',
+    category: 'Core Life Values',
+    question: 'When you reflect on your future at age 60, what will have mattered most to you in your work and life?',
+    subtitle: 'Select up to 3 core values that define true personal success for you.',
+    isMultiSelect: true,
+    maxSelect: 3,
+    allowCustomInput: true,
+    customInputPlaceholder: 'What values matter most to you in your future life?',
+    allowSkip: false,
+    options: [
+      {
+        label: 'Making a lasting positive difference in individual human lives and lifting communities',
+        description: 'Healing, teaching, defending civil rights, and leaving the world kinder and more just',
+        value: 'val_social_impact',
+        domain: 'Social Impact & Service',
+        tags: ['Service', 'Human Uplift']
+      },
+      {
+        label: 'Creative autonomy and the freedom to express my authentic vision and original ideas',
+        description: 'Living true to your creative voice without corporate conformity or rigid constraints',
+        value: 'val_creative_freedom',
+        domain: 'Creative Freedom & Authenticity',
+        tags: ['Autonomy', 'Creativity']
+      },
+      {
+        label: 'Achieving financial security, wealth creation, and complete economic independence',
+        description: 'Providing generously for family, building assets, and enjoying financial peace of mind',
+        value: 'val_financial_independence',
+        domain: 'Financial Independence & Security',
+        tags: ['Financial Security', 'Wealth']
+      },
+      {
+        label: 'Advancing scientific discovery, expanding human knowledge, and mastering a rigorous craft',
+        description: 'Contributing to fundamental research, technical breakthroughs, or scholarly literature',
+        value: 'val_intellectual_mastery',
+        domain: 'Scholarly & Scientific Mastery',
+        tags: ['Mastery', 'Discovery']
+      },
+      {
+        label: 'Leadership, building respected institutions, and influencing cultural or industrial standards',
+        description: 'Founding companies, guiding public policy, and leaving an enduring organizational legacy',
+        value: 'val_leadership_influence',
+        domain: 'Leadership & Cultural Influence',
+        tags: ['Influence', 'Legacy']
+      },
+      {
+        label: 'Balance, personal well-being, adventure, and ample time for family and personal passions',
+        description: 'Refusing to let work consume life; prioritizing health, relationships, nature, and joy',
+        value: 'val_work_life_harmony',
+        domain: 'Well-being & Life Harmony',
+        tags: ['Balance', 'Family', 'Well-being']
+      }
+    ]
+  },
+  {
+    id: 'q23',
+    stage: 'values_motivations',
+    category: 'Workplace Tradeoffs',
+    question: 'Every career path involves tradeoffs. Which challenge would you handle with the greatest resilience?',
+    subtitle: 'Understanding what compromises you are genuinely comfortable living with.',
+    options: [
+      {
+        label: 'Demanding hours and high emotional responsibility in exchange for profound, life-saving impact',
+        description: 'Comfortable with intensity when you know real patients, students, or causes depend on you',
+        value: 'tradeoff_intensity_for_impact',
+        domain: 'Healthcare & Public Service',
+        tags: ['High Impact', 'Dedication']
+      },
+      {
+        label: 'Modest financial earnings in exchange for complete creative control and personal passion',
+        description: 'Content with simpler living if your days are filled with genuine art, writing, or scholarship',
+        value: 'tradeoff_modest_income_for_art',
+        domain: 'Arts & Humanities',
+        tags: ['Creative Autonomy', 'Fulfillment']
+      },
+      {
+        label: 'Predictable routines and corporate hierarchy in exchange for stability, security, and clear boundaries',
+        description: 'Valuing predictable 9-to-5 schedules, steady benefits, and leaving work completely at the door',
+        value: 'tradeoff_stability_routine',
+        domain: 'Institutional Stability',
+        tags: ['Stability', 'Predictability']
+      },
+      {
+        label: 'Fluctuating income and uncertainty in exchange for total independence and being your own boss',
+        description: 'Thriving on entrepreneurial volatility rather than answering to a bureaucratic manager',
+        value: 'tradeoff_volatility_for_freedom',
+        domain: 'Entrepreneurship & Freelance',
+        tags: ['Entrepreneurial Freedom', 'Self-Direction']
+      }
+    ]
+  },
+  {
+    id: 'q24',
+    stage: 'future_aspirations',
+    category: 'Unconstrained Aspirations',
+    question: 'If you were granted one full year with all living expenses paid and zero external pressure, what dream project would you pursue?',
+    subtitle: 'Revealing what you would create simply out of genuine internal motivation.',
+    allowCustomInput: true,
+    customInputPlaceholder: 'Describe your dream one-year project with complete freedom...',
+    allowSkip: true,
+    options: [
+      {
+        label: 'Write an original book, produce an investigative documentary film, or record a musical album',
+        description: 'Creating an enduring cultural narrative that captures human truth and moves hearts',
+        value: 'dream_literary_artistic',
+        domain: 'Arts & Media Creation',
+        tags: ['Book', 'Film', 'Music Album']
+      },
+      {
+        label: 'Establish a free community health clinic, mentorship academy, or local youth empowerment shelter',
+        description: 'Building compassionate social infrastructure that directly protects vulnerable lives',
+        value: 'dream_clinic_school',
+        domain: 'Healthcare & Social Uplift',
+        tags: ['Community Clinic', 'Mentorship', 'Youth']
+      },
+      {
+        label: 'Join a scientific or ecological expedition exploring coral reefs, rainforests, or geological wonders',
+        description: 'Living in remote research stations documenting biodiversity, wildlife ecology, or earth history',
+        value: 'dream_ecological_expedition',
+        domain: 'Field Ecology & Exploration',
+        tags: ['Expedition', 'Ecology', 'Exploration']
+      },
+      {
+        label: 'Start an independent artisanal studio, specialty bakery/cafe, architecture practice, or venture',
+        description: 'Designing physical spaces, cultivating a loyal community, and mastering craftsmanship',
+        value: 'dream_studio_venture',
+        domain: 'Artisanal Venture & Studio',
+        tags: ['Studio', 'Artisan', 'Local Venture']
+      },
+      {
+        label: 'Travel through 10 countries studying indigenous legal customs, languages, and culinary heritage',
+        description: 'Immersing in international anthropology, global food traditions, and cultural diplomacy',
+        value: 'dream_cultural_immersion',
+        domain: 'Anthropology & Cultural Diplomacy',
+        tags: ['Cultural Diplomacy', 'Anthropology', 'Travel']
+      },
+      {
+        label: 'Design and build an innovative physical invention, eco-friendly dwelling, or technical prototype',
+        description: 'Hands-on engineering, sustainable materials, and building functional tools of the future',
+        value: 'dream_technical_invention',
+        domain: 'Engineering & Sustainable Invention',
+        tags: ['Invention', 'Sustainable Tech', 'Prototyping']
+      }
+    ]
+  },
+  {
+    id: 'q25',
     stage: 'career_clarity',
-    question: 'Where do you currently stand regarding your future career ambition?',
-    subtitle: 'This helps us validate and refine your genuine aspirations rather than guessing.',
+    category: 'Career Ambition Clarity',
+    question: 'How would you honestly describe your current thoughts about your future career ambition?',
+    subtitle: 'This helps Ascend validate and refine your genuine aspirations rather than guessing.',
     allowCustomInput: true,
     customInputPlaceholder: 'If you already have a target dream role or field in mind, tell us what it is...',
+    allowSkip: false,
     options: [
       {
         label: 'Focused Ambition: I have a specific career or discipline in mind and want to validate and prepare for it',
-        description: 'You know your target area (e.g. AI systems, biotech research, surgery, quantitative finance) and want the fastest path',
+        description: 'You know your target area (e.g., medicine, criminal law, journalism, graphic design, venture creation) and want the fastest path',
         value: 'focused_ambition',
-        tags: ['Validation', 'Skill Gap Focus']
+        domain: 'Target Validation',
+        tags: ['Validation', 'Skill Roadmaps']
       },
       {
-        label: 'Multi-Disciplinary: I have two or more strong passions and want to see how they intersect',
-        description: 'You might love both computer science and psychology, or biology and design, and want a hybrid trajectory',
+        label: 'Multi-Disciplinary: I love two or more distinct fields (e.g., biology + art, or psychology + business) and want a hybrid path',
+        description: 'You want to see how diverse passions intersect into novel trajectories (e.g., medical illustration, behavioral economics, eco-architecture)',
         value: 'multidisciplinary_intersection',
+        domain: 'Hybrid Trajectories',
         tags: ['Hybrid Trajectories', 'Cross-Disciplinary']
       },
       {
-        label: 'Early Curiosity: I know what topics I enjoy learning, but haven’t connected them to careers yet',
-        description: 'You want to see how what you love translates into practical, well-paying industries',
+        label: 'Early Curiosity: I know what topics and activities I enjoy, but haven’t connected them to careers yet',
+        description: 'You want to see how what you love translates into practical, rewarding, and fulfilling career options',
         value: 'early_curiosity',
+        domain: 'Career Exploration',
         tags: ['Exploration', 'Industry Translation']
       },
       {
-        label: 'Open Horizon: I’m open-minded and want to discover exciting trajectories I might not know exist',
-        description: 'You are ready to explore frontier emerging fields and novel paths',
+        label: 'Open Explorer: I am open-minded and want to discover exciting paths I might never have considered before',
+        description: 'You are eager to explore diverse professional landscapes across arts, sciences, public service, and commerce',
         value: 'open_horizon',
-        tags: ['Broad Discovery', 'Emerging Fields']
+        domain: 'Broad Discovery',
+        tags: ['Broad Discovery', 'Open Horizon']
       }
     ]
   }
@@ -1144,6 +2062,22 @@ export const DEMO_USERS: Record<string, UserProfile> = {
       archetype: 'The Systems Architect & Frontier Builder',
       archetypeTagline: 'Translating complex theoretical logic into high-impact, autonomous physical and digital systems.',
       summary: 'Alex demonstrates an extraordinary blend of curiosity-driven problem solving and hands-on engineering craft. You thrive when given large, ambiguous systems that you can deconstruct into clean, modular components. Your natural work rhythm balances deep, uninterrupted focus blocks with high-leverage peer design reviews.',
+      strongestInterestAreas: ['Physical & Computing Systems', 'Autonomous Robotics', 'Mathematical Modeling'],
+      secondaryInterestAreas: ['Spatial & Industrial Design', 'Science & Experimental Discovery'],
+      coreValues: ['Technical Craft & Mastery', 'Autonomy & Creative Freedom', 'Solving High-Leverage Problems'],
+      skillsToDevelop: ['Distributed Systems Profiling', 'Neural Network Latency Optimization', 'Translating Complex Tech to Non-Engineers'],
+      alternativePaths: [
+        {
+          title: 'Biomedical Robotics & Neural Prosthetics',
+          description: 'Applying your passion for mechanical interfaces and sensor fusion to medical assistive devices and neural prosthetics.',
+          reason: 'Combines your curiosity for biological systems with tactile robotics and real human clinical impact.'
+        },
+        {
+          title: 'Sustainable Infrastructure & Clean Grid Modeling',
+          description: 'Designing fault-tolerant physical grid sensors and renewable energy distribution networks.',
+          reason: 'Channels your interest in large-scale modular architecture toward ecological sustainability.'
+        }
+      ],
       corePassions: [
         'Building interactive code, robotic prototypes, and automated systems',
         'Deconstructing how autonomous algorithms work under the hood',

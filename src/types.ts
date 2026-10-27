@@ -30,15 +30,20 @@ export interface JobApplication {
 
 export interface AssessmentQuestion {
   id: string;
-  stage: 'hobbies_activities' | 'deeper_curiosity' | 'thinking_preferences' | 'career_clarity';
+  stage: 'hobbies_activities' | 'academic_learning' | 'creativity_arts' | 'people_society' | 'business_ventures' | 'science_discovery' | 'practical_craft' | 'thinking_preferences' | 'values_motivations' | 'future_aspirations' | 'career_clarity';
+  category: string;
   question: string;
   subtitle: string;
+  isMultiSelect?: boolean;
+  maxSelect?: number;
   allowCustomInput?: boolean;
   customInputPlaceholder?: string;
+  allowSkip?: boolean;
   options: {
     label: string;
     description: string;
     value: string;
+    domain?: string;
     tags?: string[];
   }[];
 }
@@ -47,13 +52,17 @@ export interface AssessmentResult {
   id: string;
   completedAt: string;
   
-  // Refined individual identity & genuine interests
+  // Refined individual identity & multi-domain genuine interests
   archetype: string;
   archetypeTagline: string;
   summary: string;
+  strongestInterestAreas: string[];
+  secondaryInterestAreas: string[];
   corePassions: string[];
   curiosityDrivers: string[];
   problemsToSolve: string[];
+  coreValues: string[];
+  skillsToDevelop: string[];
   
   // Flexible thinking style (not rigid personality labels)
   thinkingStyle: {
@@ -63,18 +72,25 @@ export interface AssessmentResult {
     description: string;
   };
   
-  // Career clarity & validation
+  // Career clarity & validation (distinguishes interest vs career ambition)
   careerClarity: {
     status: 'Refining Specific Ambition' | 'Exploring Multi-Disciplinary Passions' | 'Early Discovery & Testing' | 'Open Exploration';
     existingAmbitions: string;
     counselorValidation: string;
   };
 
+  // Alternative paths (for uncertain or multi-passionate students)
+  alternativePaths?: {
+    title: string;
+    description: string;
+    reason: string;
+  }[];
+
   // Recommendations with "Why it fits" and "Practical Simulations"
   recommendedCareers: RecommendedCareer[];
   recommendedMajors: RecommendedMajor[];
 
-  // Backward compatibility fields
+  // Vocational spectrum & learning dynamics
   riasecScores: {
     realistic: number;
     investigative: number;

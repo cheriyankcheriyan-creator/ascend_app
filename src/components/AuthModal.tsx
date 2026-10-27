@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Sparkles, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserProfile } from '../types';
+import { AscendLogo } from './AscendLogo';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -64,8 +65,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
           </button>
 
           <div className="flex items-center gap-2 mb-1.5">
-            <div className="p-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700">
-              <Sparkles className="w-4 h-4" />
+            <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center p-0.5 shadow-2xs">
+              <AscendLogo className="w-4 h-4 text-white" />
             </div>
             <span className="text-xs uppercase tracking-wider font-bold text-indigo-700">
               Ascend Student Portal

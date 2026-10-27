@@ -131,30 +131,28 @@ app.post('/api/ai/assess', async (req, res) => {
 
     if (ai) {
       try {
-        const prompt = `You are a world-class cognitive counselor and student career mentor.
-A student (${studentInfo?.name || 'Student'}, ${studentInfo?.educationLevel || 'High School / Early College'}) completed an individual interest, thinking style, and aspiration discovery assessment.
+        const prompt = `You are an elite, domain-neutral student career counselor and cognitive mentor.
+A student (${studentInfo?.name || 'Student'}, ${studentInfo?.educationLevel || 'High School / Early College'}) completed a comprehensive 25-question assessment evaluating their genuine interests, academic preferences, creative expression, thinking style, core values, and future aspirations.
 
 Student Responses:
 ${JSON.stringify(answers, null, 2)}
 Student's Own Words / Custom Reflections:
 ${JSON.stringify(customNotes || {}, null, 2)}
 
-CORE OBJECTIVE:
-Help this student discover what they genuinely love doing, what interests them most, their individual thinking style, and what they would like to pursue as a future career.
-CRITICAL PRINCIPLES:
-1. Do NOT classify them using generic, stereotyping personality tests.
-2. Treat thinking preferences (intuitive vs structured, practical vs theoretical, independent vs collaborative) as flexible tendencies, not rigid labels.
-3. Distinguish interest from career direction: identify if they have a focused ambition, multi-disciplinary interests, early curiosity, or open exploration. Validate and refine existing aspirations.
-4. For each recommended career:
-   - Provide an explicit "whyItFitsWhatYouLove" explanation grounded in their answers.
-   - Provide a "practicalSimulation" (a hands-on mini-experiment or project they can test this weekend).
-5. Suggest relevant undergraduate majors and target colleges.`;
+CORE PRINCIPLES (CRITICAL):
+1. EMBRACE ALL DOMAINS EQUALLY: Do NOT assume the student wants software, coding, or technology. Actively evaluate careers across Arts & Humanities, Medicine & Healthcare, Law & Public Policy, Education & Psychology, Biological & Environmental Sciences, Architecture & Design, Commerce & Entrepreneurship, and Skilled Practical Crafts.
+2. RECOMMEND STRICTLY ACCORDING TO THEIR GENUINE PASSIONS: If they love human behavior and healing, suggest Clinical Psychology, Pediatric Medicine, or Public Health. If they love writing, storytelling, or culture, suggest Investigative Journalism, Literary Publishing, or Creative Direction. If they love physical spaces and aesthetics, suggest Architecture or Industrial Design.
+3. DISTINGUISH INTEREST FROM CAREER AMBITION: Validate their stated ambition if they have one; help them explore multi-disciplinary intersections if they have varied passions.
+4. FOR EACH RECOMMENDED CAREER:
+   - Provide an explicit "whyItFitsWhatYouLove" explanation grounded in their specific answers.
+   - Provide a "practicalSimulation" (a hands-on mini-project or experiment they can try this weekend to test their interest before committing).
+5. PROVIDE ALTERNATIVE PATHS: If the student has competing interests or expresses uncertainty, propose 2 distinct alternative paths acknowledging uncertainty.`;
 
         const response = await ai.models.generateContent({
           model: 'gemini-3.8-flash',
           contents: prompt,
           config: {
-            systemInstruction: 'You are an elite student career mentor focused on genuine curiosity and individual identity discovery.',
+            systemInstruction: 'You are an elite student career mentor focused on genuine curiosity and individual identity discovery across all academic, creative, professional, and vocational domains.',
             responseMimeType: 'application/json',
             responseSchema: {
               type: Type.OBJECT,
@@ -162,6 +160,14 @@ CRITICAL PRINCIPLES:
                 archetype: { type: Type.STRING },
                 archetypeTagline: { type: Type.STRING },
                 summary: { type: Type.STRING },
+                strongestInterestAreas: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING }
+                },
+                secondaryInterestAreas: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING }
+                },
                 corePassions: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
@@ -171,6 +177,14 @@ CRITICAL PRINCIPLES:
                   items: { type: Type.STRING }
                 },
                 problemsToSolve: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING }
+                },
+                coreValues: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING }
+                },
+                skillsToDevelop: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
                 },
@@ -195,6 +209,18 @@ CRITICAL PRINCIPLES:
                     counselorValidation: { type: Type.STRING }
                   },
                   required: ['status', 'existingAmbitions', 'counselorValidation']
+                },
+                alternativePaths: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      title: { type: Type.STRING },
+                      description: { type: Type.STRING },
+                      reason: { type: Type.STRING }
+                    },
+                    required: ['title', 'description', 'reason']
+                  }
                 },
                 riasecScores: {
                   type: Type.OBJECT,
@@ -294,9 +320,13 @@ CRITICAL PRINCIPLES:
                 'archetype',
                 'archetypeTagline',
                 'summary',
+                'strongestInterestAreas',
+                'secondaryInterestAreas',
                 'corePassions',
                 'curiosityDrivers',
                 'problemsToSolve',
+                'coreValues',
+                'skillsToDevelop',
                 'thinkingStyle',
                 'careerClarity',
                 'riasecScores',
@@ -527,16 +557,489 @@ What specific college or career area would you like to drill down into next?`;
   }
 });
 
-// Helper for offline/fallback heuristic assessment with authentic interest discovery
-function generateHeuristicAssessment(answers: Record<string, string>, customNotes: any, studentInfo: any) {
-  const customPassions = customNotes?.q1 || customNotes?.q2 || 'Building interactive software and exploring systems';
-  
+// Helper for offline/fallback heuristic assessment with authentic multi-domain interest discovery
+function generateHeuristicAssessment(answers: Record<string, any>, customNotes: any, studentInfo: any) {
+  const answerVals = Object.values(answers).flatMap(val => Array.isArray(val) ? val : [val]);
+  const textBlob = answerVals.join(' ') + ' ' + JSON.stringify(customNotes || {});
+
+  // Domain score counters
+  let scores = {
+    health: 0,
+    arts: 0,
+    law: 0,
+    business: 0,
+    ecology: 0,
+    architecture: 0,
+    engineering: 0,
+  };
+
+  // Keyword / tag matching
+  if (/medicine|health|physiolog|biomed|clinic|patient|counselor|healing/.test(textBlob)) scores.health += 3;
+  if (/creative|writing|visual|art|humanit|story|literary|journalism|media|music/.test(textBlob)) scores.arts += 3;
+  if (/law|justice|policy|advocacy|civil|rights|ethic|civic/.test(textBlob)) scores.law += 3;
+  if (/business|finance|market|entrepreneur|commerce|venture|invest/.test(textBlob)) scores.business += 3;
+  if (/nature|wildlife|ecolog|conservation|climate|earth|garden|environment/.test(textBlob)) scores.ecology += 3;
+  if (/architecture|spatial|interior|styling|furniture|urban/.test(textBlob)) scores.architecture += 3;
+  if (/computing|software|robotics|code|electronics|systems|mechanics|tinker/.test(textBlob)) scores.engineering += 3;
+
+  // Find top domain
+  const topDomain = (Object.keys(scores) as (keyof typeof scores)[]).reduce((a, b) => scores[a] >= scores[b] ? a : b);
+
+  const customPassions = customNotes?.q1 || customNotes?.q2 || 'Exploring diverse passions and meaningful contributions';
+
+  if (topDomain === 'health') {
+    return {
+      id: 'res_' + Date.now(),
+      completedAt: new Date().toISOString(),
+      archetype: 'The Compassionate Healer & Clinical Investigator',
+      archetypeTagline: 'Dedicated to understanding human wellness, easing suffering, and advancing healthcare.',
+      summary: `${studentInfo?.name || 'You'} demonstrated a profound empathic drive and scientific curiosity toward human health and emotional well-being. Rather than fitting a rigid box, your profile reflects a dedicated caregiver and analytical thinker who wants their daily work to tangibly save and improve lives.`,
+      strongestInterestAreas: ['Biomedical & Clinical Healthcare', 'Psychology & Mental Wellness', 'Human Physiology'],
+      secondaryInterestAreas: ['Public Health Advocacy', 'Community Outreach & Education'],
+      corePassions: [
+        customPassions,
+        'Understanding how human anatomy, illness, and recovery work',
+        'Directly supporting patients and uplifting community well-being'
+      ],
+      curiosityDrivers: [
+        'How early diagnosis and compassionate intervention transform long-term recovery',
+        'The intricate relationship between mental health, neurology, and physical physiology'
+      ],
+      problemsToSolve: [
+        'Expanding affordable, human-centered healthcare and mental health access',
+        'Improving clinical outcomes and compassionate patient support'
+      ],
+      coreValues: ['Human Compassion & Healing', 'Integrity & Service', 'Intellectual Rigor'],
+      skillsToDevelop: ['Clinical Observation & Empathy', 'Biochemical Fundamentals', 'Patient Consultation Ethics'],
+      thinkingStyle: {
+        approach: 'Empathetic Observation with Scientific Rigor',
+        flexiblePreferences: [
+          'Anchors decisions in patient impact and compassionate care',
+          'Balances clinical evidence with deep emotional listening',
+          'Thrives in active, patient-facing settings'
+        ],
+        collaborationVibe: 'Multidisciplinary Clinical Care Team',
+        description: 'You evaluate situations through the lens of human compassion, pairing scientific diagnosis with emotional safety.'
+      },
+      careerClarity: {
+        status: 'Refining Specific Ambition',
+        existingAmbitions: 'Healthcare, Clinical Psychology & Medical Practice',
+        counselorValidation: 'Your strong empathy and curiosity for living systems strongly point toward healthcare. Your next focus should be securing clinical volunteer shadowing and exploring premed/pre-health requirements.'
+      },
+      alternativePaths: [
+        {
+          title: 'Public Health Policy & Global Epidemiology',
+          description: 'Focusing on community-wide health equity, disease prevention, and healthcare accessibility reform.',
+          reason: 'Combines your passion for healthcare with systemic social impact.'
+        },
+        {
+          title: 'Neuropsychology & Clinical Counseling',
+          description: 'Diagnosing cognitive conditions and providing individual therapeutic healing.',
+          reason: 'Channels your listening presence into profound mental wellness recovery.'
+        }
+      ],
+      riasecScores: { realistic: 55, investigative: 88, artistic: 45, social: 92, enterprising: 60, conventional: 65 },
+      workStyle: {
+        introversionExtroversionLabel: 'Empathetic Ambivert (Patient-Centered)',
+        introversionExtroversionScore: 58,
+        collaborationPreference: 'Active collaborative rounds with dedicated patient focus blocks',
+        environmentType: 'Hospitals, wellness clinics, and community health centers',
+        problemSolvingApproach: 'Human-centered diagnosis grounded in clinical protocol'
+      },
+      learningStyle: {
+        primaryStyle: 'Contextual Clinical Learner',
+        description: 'You understand best when concepts are illustrated through real patient case studies and hands-on clinical lab simulations.',
+        recommendedFormat: 'Case study rounds, anatomy labs, and volunteer clinical shadowing'
+      },
+      strengths: ['Deep empathetic listening', 'Calm under emotional stress', 'Holistic human observation', 'Diagnostic diligence'],
+      growthAreas: ['Setting emotional boundaries to prevent burnout', 'Navigating complex administrative protocols'],
+      recommendedCareers: [
+        {
+          id: 'c-clinical-psych',
+          title: 'Clinical Child & Adolescent Psychologist',
+          matchScore: 95,
+          industry: 'Mental Health & Behavioral Care',
+          salaryRange: '$92,000 – $145,000',
+          growthOutlook: '+22% growth over next 5 years (High)',
+          automationResilience: 'Very High',
+          description: 'Diagnose and treat psychological difficulties in young people, fostering emotional resilience and family wellness.',
+          keySkills: ['Cognitive Behavioral Therapy', 'Empathetic Counseling', 'Diagnostic Assessment', 'Crisis De-escalation'],
+          dayInTheLife: 'Conducts therapeutic sessions with youth, meets with parents to discuss behavioral strategies, and collaborates with pediatricians.',
+          whyItFitsWhatYouLove: 'Directly channels your deep empathy and interest in why people think, feel, and heal.',
+          practicalSimulation: {
+            title: 'Shadow a Youth Helpline or Active Listening Workshop',
+            description: 'Complete a weekend active-listening certification (e.g. 7 Cups or Crisis Text Line training).',
+            tryItThisWeekend: 'Take an online active-listening course module and practice reflective summarizing in conversations.'
+          }
+        },
+        {
+          id: 'c-physician',
+          title: 'Pediatric Physician / General Practitioner',
+          matchScore: 92,
+          industry: 'Medicine & Primary Care',
+          salaryRange: '$180,000 – $260,000',
+          growthOutlook: '+18% growth over next 5 years (Steady High)',
+          automationResilience: 'Very High',
+          description: 'Deliver preventative care, diagnose illnesses, and manage treatment plans for growing children and families.',
+          keySkills: ['Clinical Diagnosis', 'Patient Communication', 'Pharmacology', 'Preventative Medicine'],
+          dayInTheLife: 'Performs physical exams, evaluates developmental milestones, and advises families on healthy nutrition and preventive habits.',
+          whyItFitsWhatYouLove: 'Fulfills your drive for tangible, human-saving impact paired with lifelong biological curiosity.',
+          practicalSimulation: {
+            title: 'Clinical Case Teardown',
+            description: 'Read 2 real-world clinical case studies from the New England Journal of Medicine and trace the diagnostic puzzle.',
+            tryItThisWeekend: 'Review a pediatric case presentation online and map out symptoms to possible differential diagnoses.'
+          }
+        },
+        {
+          id: 'c-biomed-scientist',
+          title: 'Biomedical & Pharmaceutical Research Scientist',
+          matchScore: 89,
+          industry: 'Biotechnology & Medical Research',
+          salaryRange: '$105,000 – $170,000',
+          growthOutlook: '+20% growth over next 5 years (High)',
+          automationResilience: 'High',
+          description: 'Investigate molecular disease pathways and test innovative therapies to eradicate chronic and infectious illnesses.',
+          keySkills: ['Molecular Biology', 'Cell Culture', 'Data Interpretation', 'Experimental Design'],
+          dayInTheLife: 'Analyzes assay results from cell culture trials, prepares findings for peer review, and presents data to clinical trial directors.',
+          whyItFitsWhatYouLove: 'Connects your curiosity about medicine with the rigor of laboratory discovery.',
+          practicalSimulation: {
+            title: 'Explore Protein Folding in the Browser',
+            description: 'Use the free AlphaFold Protein Database to visualize 3D molecular structures and disease binding sites.',
+            tryItThisWeekend: 'Search AlphaFold for a human hemoglobin or insulin model and explore how mutations alter binding shape.'
+          }
+        }
+      ],
+      recommendedMajors: [
+        {
+          id: 'm-premed-bio',
+          name: 'Biomedical Sciences / Human Biology',
+          degreeType: 'B.S. in Biomedical Sciences',
+          matchReason: 'Direct pathway for clinical medicine, pre-health tracks, and pharmaceutical discovery.',
+          targetColleges: ['Stanford University', 'Johns Hopkins', 'UCLA', 'University of Michigan'],
+          careerAlignment: ['Physician', 'Clinical Researcher', 'Biomedical Scientist']
+        },
+        {
+          id: 'm-psych',
+          name: 'Psychology & Cognitive Science',
+          degreeType: 'B.A. / B.S. in Psychology',
+          matchReason: 'Foundations of behavioral neuroscience, developmental psychology, and counseling therapies.',
+          targetColleges: ['UC Berkeley', 'University of Michigan', 'NYU', 'University of Texas at Austin'],
+          careerAlignment: ['Clinical Psychologist', 'Counselor', 'Behavioral Analyst']
+        }
+      ]
+    };
+  }
+
+  if (topDomain === 'arts') {
+    return {
+      id: 'res_' + Date.now(),
+      completedAt: new Date().toISOString(),
+      archetype: 'The Narrative Visionary & Cultural Storyteller',
+      archetypeTagline: 'Translating human experiences into poignant literature, compelling visual arts, and timeless media.',
+      summary: `${studentInfo?.name || 'You'} demonstrated a rich creative imagination, narrative sensitivity, and deep appreciation for aesthetic expression. Rather than fitting a rigid mold, your profile reflects an articulate creator who thinks laterally, values authenticity, and wants to move human hearts through words, design, and ideas.`,
+      strongestInterestAreas: ['Creative Writing & Literature', 'Visual Arts & Creative Direction', 'Media & Storytelling'],
+      secondaryInterestAreas: ['Humanities & Philosophy', 'Cultural Journalism & Public Exhibitions'],
+      corePassions: [
+        customPassions,
+        'Sculpting language, stories, and evocative artistic narratives',
+        'Exploring cultural heritage, philosophy, and aesthetic balance'
+      ],
+      curiosityDrivers: [
+        'How storytelling reframes human perspective and fosters cross-cultural empathy',
+        'The interplay of visual composition, typography, color, and emotional resonance'
+      ],
+      problemsToSolve: [
+        'Creating authentic cultural narratives in an era of superficial noise',
+        'Illuminating untold human stories and preserving cultural nuance'
+      ],
+      coreValues: ['Creative Autonomy', 'Originality & Craft', 'Authentic Expression'],
+      skillsToDevelop: ['Long-form Narrative Structure', 'Visual Portfolio Curation', 'Editorial Critique'],
+      thinkingStyle: {
+        approach: 'Intuitive & Lateral with Aesthetic Discipline',
+        flexiblePreferences: [
+          'Connects non-obvious ideas across history, literature, and art',
+          'Values dedicated flow state for writing and artistic drafting',
+          'Thrives on constructive peer critique and creative freedom'
+        ],
+        collaborationVibe: 'Creative Studio with Mutual Autonomy',
+        description: 'You naturally think in metaphors and evocative images, seeing the human soul behind abstract ideas.'
+      },
+      careerClarity: {
+        status: 'Exploring Multi-Disciplinary Passions',
+        existingAmbitions: 'Writing, Creative Direction, Media & Arts',
+        counselorValidation: 'Your strong literary and aesthetic voice provides a versatile foundation. Focus on building a cohesive portfolio of 3-5 published pieces, creative exhibitions, or multimedia productions.'
+      },
+      alternativePaths: [
+        {
+          title: 'Investigative Cultural Journalism & Podcasting',
+          description: 'Documenting human struggles, civic rights, and cultural phenomena through investigative reporting.',
+          reason: 'Channels your narrative gift toward truth, civic transparency, and public impact.'
+        },
+        {
+          title: 'Brand Creative Director & Narrative Strategist',
+          description: 'Guiding the visual identity, storytelling campaigns, and emotional resonance for mission-driven brands.',
+          reason: 'Combines your creative eye with high-leverage commercial and cultural influence.'
+        }
+      ],
+      riasecScores: { realistic: 45, investigative: 75, artistic: 96, social: 70, enterprising: 62, conventional: 48 },
+      workStyle: {
+        introversionExtroversionLabel: 'Reflective Independent Creator',
+        introversionExtroversionScore: 42,
+        collaborationPreference: 'Deep solo creation sprints punctuated by creative critique reviews',
+        environmentType: 'Creative studios, publishing houses, cultural institutions, or quiet writing sanctuaries',
+        problemSolvingApproach: 'Imaginative synthesis and narrative reframing'
+      },
+      learningStyle: {
+        primaryStyle: 'Narrative & Aesthetic Synthesizer',
+        description: 'You assimilate ideas fastest through rich storytelling, primary literary texts, and visual portfolio critique.',
+        recommendedFormat: 'Creative writing workshops, visual critique studios, and literary seminars'
+      },
+      strengths: ['Exceptional written communication', 'Aesthetic and spatial sensitivity', 'Empathic character insight', 'Original conceptualization'],
+      growthAreas: ['Balancing perfectionism with publishing deadlines', 'Commercial pitching and contract negotiation'],
+      recommendedCareers: [
+        {
+          id: 'c-author-editor',
+          title: 'Literary Author & Senior Editor',
+          matchScore: 96,
+          industry: 'Publishing & Literary Arts',
+          salaryRange: '$75,000 – $135,000',
+          growthOutlook: '+12% steady growth (High Prestige)',
+          automationResilience: 'Very High',
+          description: 'Write original literature, curate manuscript acquisitions, and polish literary prose that shapes cultural dialogue.',
+          keySkills: ['Long-form Fiction & Nonfiction', 'Developmental Editing', 'Literary Analysis', 'Publishing Industry Strategy'],
+          dayInTheLife: 'Spends mornings drafting original chapters, meets with authors to restructure manuscript pacing, and reviews galley proofs.',
+          whyItFitsWhatYouLove: 'Feeds your love of sculpting language, deep reading, and illuminating the human condition.',
+          practicalSimulation: {
+            title: 'Draft a 1,500-Word Literary Essay',
+            description: 'Write a personal essay exploring a moment that changed your perspective on empathy, and submit it to a student journal.',
+            tryItThisWeekend: 'Outline your essay using a 3-act narrative arc, draft it in a quiet cafe, and self-edit for rhythmic cadence.'
+          }
+        },
+        {
+          id: 'c-creative-dir',
+          title: 'Creative Director & Visual Storyteller',
+          matchScore: 92,
+          industry: 'Media Production & Visual Arts',
+          salaryRange: '$110,000 – $185,000',
+          growthOutlook: '+16% growth over next 5 years (High)',
+          automationResilience: 'High',
+          description: 'Direct the overarching artistic vision for films, exhibitions, publications, or multimedia design campaigns.',
+          keySkills: ['Visual Storyboarding', 'Art Direction', 'Typography & Color Theory', 'Cross-Media Production'],
+          dayInTheLife: 'Reviews mood boards with cinematographers, pitches a brand narrative concept to stakeholders, and oversees post-production color grading.',
+          whyItFitsWhatYouLove: 'Harmonizes visual styling, storytelling, and conceptual innovation into a singular vision.',
+          practicalSimulation: {
+            title: 'Curate a Multimedia Concept Bible',
+            description: 'Create a 6-slide visual pitch for a fictional documentary film or visual exhibition in Figma or Canva.',
+            tryItThisWeekend: 'Curate photography, color palettes, typography, and a 200-word synopsis of your creative concept.'
+          }
+        },
+        {
+          id: 'c-investigative-journ',
+          title: 'Investigative Journalist & Feature Writer',
+          matchScore: 89,
+          industry: 'News Media & Documentary',
+          salaryRange: '$68,000 – $120,000',
+          growthOutlook: '+10% steady demand for high-integrity reporting',
+          automationResilience: 'Very High',
+          description: 'Investigate societal issues, interview key witnesses, and write compelling long-form pieces that hold institutions accountable.',
+          keySkills: ['Investigative Interviewing', 'Fact-checking', 'Narrative Nonfiction', 'Ethical Reporting'],
+          dayInTheLife: 'Conducts an investigative interview, reviews public records and FOIA requests, and crafts a gripping narrative feature.',
+          whyItFitsWhatYouLove: 'Bridges deep intellectual curiosity with courageous storytelling and civic purpose.',
+          practicalSimulation: {
+            title: 'Conduct an In-Depth Local Profile',
+            description: 'Interview a local community leader or artisan and write an 800-word human interest profile.',
+            tryItThisWeekend: 'Prepare 5 open-ended questions, conduct a 25-minute interview, and write up their story with vivid sensory details.'
+          }
+        }
+      ],
+      recommendedMajors: [
+        {
+          id: 'm-english-writing',
+          name: 'English Literature & Creative Writing',
+          degreeType: 'B.A. in English',
+          matchReason: 'Mastery of rhetorical craft, literary criticism, and narrative world-building.',
+          targetColleges: ['Columbia University', 'NYU', 'University of Michigan', 'Northwestern'],
+          careerAlignment: ['Author', 'Senior Editor', 'Narrative Strategist']
+        },
+        {
+          id: 'm-film-media',
+          name: 'Cinema Studies & Media Arts',
+          degreeType: 'B.A. in Film & Media Arts',
+          matchReason: 'Visual composition, directing, and narrative production across modern media.',
+          targetColleges: ['USC', 'NYU Tisch', 'UCLA', 'Wesleyan'],
+          careerAlignment: ['Creative Director', 'Documentary Filmmaker', 'Art Director']
+        }
+      ]
+    };
+  }
+
+  if (topDomain === 'law' || topDomain === 'ecology' || topDomain === 'business' || topDomain === 'architecture') {
+    // Balanced multi-domain representation
+    return {
+      id: 'res_' + Date.now(),
+      completedAt: new Date().toISOString(),
+      archetype: topDomain === 'law' ? 'The Civic Advocate & Policy Strategist' : topDomain === 'ecology' ? 'The Ecological Guardian & Earth Scientist' : topDomain === 'business' ? 'The Strategic Entrepreneur & Market Builder' : 'The Spatial Innovator & Sustainable Architect',
+      archetypeTagline: topDomain === 'law' ? 'Championing ethical justice, human rights, and systemic policy reform.' : topDomain === 'ecology' ? 'Protecting biodiversity, natural ecosystems, and sustainable planetary stewardship.' : topDomain === 'business' ? 'Building resilient enterprises, allocating capital, and driving economic innovation.' : 'Designing human spaces, sustainable environments, and timeless structural harmony.',
+      summary: `${studentInfo?.name || 'You'} demonstrated balanced critical reasoning, ethical clarity, and a strong sense of purpose. Rather than fitting a narrow technical box, your assessment highlights a versatile thinker who wants their career to build sustainable value, defend fairness, and shape lasting institutions.`,
+      strongestInterestAreas: topDomain === 'law' ? ['Constitutional Law & Civil Rights', 'Public Policy', 'Investigative Analysis'] : topDomain === 'ecology' ? ['Conservation Biology', 'Environmental Policy', 'Earth Systems'] : topDomain === 'business' ? ['Entrepreneurship & Strategy', 'Financial Economics', 'Brand Strategy'] : ['Sustainable Architecture', 'Urban Planning', 'Spatial Aesthetics'],
+      secondaryInterestAreas: ['Ethics & Philosophy', 'Organizational Leadership', 'Sociological Research'],
+      corePassions: [
+        customPassions,
+        'Advancing human progress through thoughtful systems, ethical frameworks, and disciplined effort',
+        'Solving real-world community challenges with lasting integrity'
+      ],
+      curiosityDrivers: [
+        'How policy, economics, and environmental stewardship intersect to shape human civilizations',
+        'Finding practical solutions that balance individual rights with community wellness'
+      ],
+      problemsToSolve: [
+        'Creating fair, transparent, and resilient institutions that protect future generations',
+        'Designing sustainable models for community prosperity'
+      ],
+      coreValues: ['Integrity & Justice', 'Autonomy & Purpose', 'Lasting Impact'],
+      skillsToDevelop: ['Strategic Negotiation', 'Policy & Economic Analysis', 'Oral & Written Advocacy'],
+      thinkingStyle: {
+        approach: 'Structured Reasoning with Moral Conviction',
+        flexiblePreferences: [
+          'Scrutinizes evidence carefully before drawing conclusions',
+          'Weighs long-term societal tradeoffs over immediate shortcuts',
+          'Enjoys diplomatic debate and building consensus'
+        ],
+        collaborationVibe: 'Purpose-Driven Strategic Alliance',
+        description: 'You naturally look at the big picture, evaluating how decisions affect real people and institutions over decades.'
+      },
+      careerClarity: {
+        status: 'Refining Specific Ambition',
+        existingAmbitions: topDomain === 'law' ? 'Law, Policy & Civic Advocacy' : topDomain === 'ecology' ? 'Environmental Science & Conservation' : topDomain === 'business' ? 'Sustainable Enterprise & Finance' : 'Architecture & Sustainable Design',
+        counselorValidation: 'Your strong analytical discipline and societal awareness make you a natural candidate for impactful leadership. Focus on practical internships, published policy/case memos, and collegiate debate or design studios.'
+      },
+      alternativePaths: [
+        {
+          title: 'Human Rights & Constitutional Law',
+          description: 'Defending civil liberties and advocating in judicial courts and legislative forums.',
+          reason: 'Channels your principled conviction and analytical writing into systemic legal justice.'
+        },
+        {
+          title: 'Environmental Policy & Sustainable Resource Management',
+          description: 'Protecting natural water tables, public lands, and sustainable agricultural ecosystems.',
+          reason: 'Bridges science and public policy to ensure ecological stability.'
+        }
+      ],
+      riasecScores: { realistic: 62, investigative: 85, artistic: 68, social: 75, enterprising: 80, conventional: 72 },
+      workStyle: {
+        introversionExtroversionLabel: 'Strategic Ambivert (Consensus Builder)',
+        introversionExtroversionScore: 52,
+        collaborationPreference: 'Focused independent policy research with structured stakeholder consultations',
+        environmentType: 'Civic chambers, public agencies, academic institutes, and consulting studios',
+        problemSolvingApproach: 'Systematic deduction paired with ethical stakeholder impact'
+      },
+      learningStyle: {
+        primaryStyle: 'Analytical Case-Study Learner',
+        description: 'You learn fastest when analyzing historical precedents, constitutional cases, and empirical economic models.',
+        recommendedFormat: 'Case briefs, model delegations, policy debates, and symposiums'
+      },
+      strengths: ['Rigorous analytical reasoning', 'Principled moral judgment', 'Clear persuasive speech', 'Strategic foresight'],
+      growthAreas: ['Patience with slow institutional bureaucracies', 'Managing emotional fatigue in contested disputes'],
+      recommendedCareers: [
+        {
+          id: 'c-policy-analyst',
+          title: 'Public Policy Director & Legal Strategist',
+          matchScore: 94,
+          industry: 'Civic Governance & Law',
+          salaryRange: '$95,000 – $165,000',
+          growthOutlook: '+14% growth over next 5 years (Steady)',
+          automationResilience: 'Very High',
+          description: 'Draft policy briefs, analyze statutory legislation, and advise civic leaders on systemic reforms.',
+          keySkills: ['Statutory Interpretation', 'Economic Modeling', 'Stakeholder Negotiation', 'Policy Writing'],
+          dayInTheLife: 'Analyzes a draft public bill, conducts briefing sessions with civil society leaders, and delivers testimony at a legislative hearing.',
+          whyItFitsWhatYouLove: 'Directly harnesses your passion for truth, societal justice, and systemic human uplift.',
+          practicalSimulation: {
+            title: 'Draft a 2-Page Civic Policy Memo',
+            description: 'Identify a problem in your school or city (e.g. transit, mental health, park access) and write a 2-page policy solution memo.',
+            tryItThisWeekend: 'Structure the memo: Problem Statement, Stakeholder Impact, 3 Proposed Solutions, and Recommended Action Plan.'
+          }
+        },
+        {
+          id: 'c-conservation-lead',
+          title: 'Environmental Scientist & Conservation Director',
+          matchScore: 91,
+          industry: 'Environmental Science & Sustainability',
+          salaryRange: '$82,000 – $138,000',
+          growthOutlook: '+19% growth over next 5 years (High)',
+          automationResilience: 'Very High',
+          description: 'Conduct field ecology research, monitor water/soil biodiversity, and establish sustainable conservation reserves.',
+          keySkills: ['Ecological Sampling', 'GIS Spatial Mapping', 'Environmental Law', 'Conservation Biology'],
+          dayInTheLife: 'Collects water samples in a wetland preserve, maps habitat fragmentation using GIS satellite layers, and coordinates with landowners.',
+          whyItFitsWhatYouLove: 'Connects your love of the natural world with tangible scientific preservation.',
+          practicalSimulation: {
+            title: 'Audit Local Biodiversity in iNaturalist',
+            description: 'Document 10 native plant and wildlife species in a nearby park or wetland using the free iNaturalist community science app.',
+            tryItThisWeekend: 'Photograph and identify species, noting ecological indicators of soil and water health.'
+          }
+        },
+        {
+          id: 'c-venture-founder',
+          title: 'Sustainable Enterprise Founder & Operator',
+          matchScore: 88,
+          industry: 'Ethical Commerce & Social Innovation',
+          salaryRange: '$85,000 – $180,000',
+          growthOutlook: '+24% growth over next 5 years (Exceptional)',
+          automationResilience: 'High',
+          description: 'Launch and scale an enterprise that addresses real community needs while maintaining fiscal sustainability.',
+          keySkills: ['Business Model Design', 'Unit Economics', 'Team Leadership', 'Brand Positioning'],
+          dayInTheLife: 'Reviews weekly unit economics and revenue reports, leads a product design sprint, and interviews candidate team leads.',
+          whyItFitsWhatYouLove: 'Offers complete entrepreneurial autonomy and the freedom to build an organization aligned with your values.',
+          practicalSimulation: {
+            title: 'Build a Lean Business Canvas',
+            description: 'Draft a 1-page business model canvas for an ethical small enterprise or campus venture idea.',
+            tryItThisWeekend: 'Define Value Proposition, Customer Segments, Revenue Streams, and Cost Structure in 1 page.'
+          }
+        }
+      ],
+      recommendedMajors: [
+        {
+          id: 'm-policy-law',
+          name: 'Public Policy, Law & Society',
+          degreeType: 'B.A. in Public Policy',
+          matchReason: 'Direct pathway to civil leadership, law school, policy think tanks, and civic advocacy.',
+          targetColleges: ['Georgetown', 'UC Berkeley', 'University of Michigan', 'Harvard'],
+          careerAlignment: ['Policy Analyst', 'Attorney', 'Civic Leader']
+        },
+        {
+          id: 'm-env-studies',
+          name: 'Environmental Science & Sustainable Systems',
+          degreeType: 'B.S. in Environmental Science',
+          matchReason: 'Integrates ecological fieldwork, resource economics, and environmental policy.',
+          targetColleges: ['UC Davis', 'Cornell', 'UW Madison', 'University of Washington'],
+          careerAlignment: ['Environmental Scientist', 'Conservation Director', 'Sustainability Consultant']
+        }
+      ]
+    };
+  }
+
+  // Default to Systems & Hands-On Engineering if engineering keywords dominate
   return {
     id: 'res_' + Date.now(),
     completedAt: new Date().toISOString(),
     archetype: 'The Systems Architect & Frontier Builder',
     archetypeTagline: 'Translating complex theoretical curiosity into high-impact, autonomous physical and digital systems.',
     summary: `${studentInfo?.name || 'You'} demonstrated an extraordinary passion for creative problem solving and hands-on building. Rather than fitting a generic label, your answers reveal someone energized by understanding how complex mechanisms work and turning abstract concepts into tangible creations.`,
+    strongestInterestAreas: ['Physical & Computing Systems', 'Autonomous Robotics', 'Mathematical Modeling'],
+    secondaryInterestAreas: ['Spatial & Industrial Design', 'Science & Experimental Discovery'],
+    coreValues: ['Technical Craft & Mastery', 'Autonomy & Creative Freedom', 'Solving High-Leverage Problems'],
+    skillsToDevelop: ['Distributed Systems Profiling', 'Neural Network Latency Optimization', 'Translating Complex Tech to Non-Engineers'],
+    alternativePaths: [
+      {
+        title: 'Biomedical Robotics & Neural Prosthetics',
+        description: 'Applying your passion for mechanical interfaces and sensor fusion to medical assistive devices and neural prosthetics.',
+        reason: 'Combines your curiosity for biological systems with tactile robotics and real human clinical impact.'
+      },
+      {
+        title: 'Sustainable Infrastructure & Clean Grid Modeling',
+        description: 'Designing fault-tolerant physical grid sensors and renewable energy distribution networks.',
+        reason: 'Channels your interest in large-scale modular architecture toward ecological sustainability.'
+      }
+    ],
     corePassions: [
       customPassions,
       'Deconstructing how autonomous algorithms and machines work under the hood',
@@ -565,14 +1068,7 @@ function generateHeuristicAssessment(answers: Record<string, string>, customNote
       existingAmbitions: 'AI / Machine Learning Systems & Autonomous Robotics',
       counselorValidation: 'Your passion for building systems and computational thinking directly validates your target career in AI and robotics software engineering. Rather than generic career pivots, your focus should be on building 2 portfolio-grade neural network deployments and preparing for undergraduate research.'
     },
-    riasecScores: {
-      realistic: 78,
-      investigative: 92,
-      artistic: 48,
-      social: 55,
-      enterprising: 68,
-      conventional: 70
-    },
+    riasecScores: { realistic: 78, investigative: 92, artistic: 48, social: 55, enterprising: 68, conventional: 70 },
     workStyle: {
       introversionExtroversionLabel: 'Focused Ambivert (Deep Builder)',
       introversionExtroversionScore: 38,
@@ -585,16 +1081,8 @@ function generateHeuristicAssessment(answers: Record<string, string>, customNote
       description: 'You assimilate concepts fastest when writing live code, running benchmarks, and dissecting working reference architectures.',
       recommendedFormat: 'Hands-on project repos, interactive sandboxes, and competitive hackathons'
     },
-    strengths: [
-      'Algorithmic systems thinking & root-cause debugging',
-      'Sustained deep focus during complex architectural design',
-      'Speed of acquiring new technical frameworks and APIs',
-      'Quantitative modeling of performance tradeoffs'
-    ],
-    growthAreas: [
-      'Translating deeply technical solutions to non-technical business stakeholders',
-      'Balancing ideal architectural perfectionism with speed to market'
-    ],
+    strengths: ['Algorithmic systems thinking & root-cause debugging', 'Sustained deep focus during complex architectural design', 'Speed of acquiring new technical frameworks and APIs', 'Quantitative modeling of performance tradeoffs'],
+    growthAreas: ['Translating deeply technical solutions to non-technical business stakeholders', 'Balancing ideal architectural perfectionism with speed to market'],
     recommendedCareers: [
       {
         id: 'c-ai-eng',

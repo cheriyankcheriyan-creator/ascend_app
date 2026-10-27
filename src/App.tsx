@@ -9,6 +9,7 @@ import { AuthModal } from './components/AuthModal';
 import { AiMentorModal } from './components/AiMentorModal';
 import { ProSubscriptionModal } from './components/ProSubscriptionModal';
 import { RecommendedCareer } from './types';
+import { AscendLogo } from './components/AscendLogo';
 import { Sparkles, Compass, GraduationCap, Briefcase, User, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 function MainApp() {
@@ -172,6 +173,9 @@ function MainApp() {
       <footer className="border-t border-slate-200 bg-white py-8 px-4 sm:px-6 lg:px-8 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-slate-700">
+            <div className="w-5 h-5 rounded-md bg-indigo-600 text-white flex items-center justify-center p-0.5">
+              <AscendLogo className="w-3.5 h-3.5 text-white" showSparkle={false} />
+            </div>
             <span className="font-bold text-slate-900 tracking-tight">Ascend</span>
             <span>· AI Student Career Guidance &amp; College Discovery</span>
           </div>

@@ -118,9 +118,16 @@ export const StudentProfileView: React.FC<StudentProfileViewProps> = ({
             <p className="text-[11px] text-slate-400">{user.email}</p>
 
             {user.assessmentResult && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100 mt-1">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                <span>{user.assessmentResult.archetype}</span>
+              <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>{user.assessmentResult.archetype}</span>
+                </div>
+                {user.assessmentResult.strongestInterestAreas?.slice(0, 2).map((domain, i) => (
+                  <span key={i} className="text-[11px] px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium border border-slate-200">
+                    {domain}
+                  </span>
+                ))}
               </div>
             )}
           </div>

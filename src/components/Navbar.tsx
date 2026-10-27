@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Compass, GraduationCap, Briefcase, User, Sparkles, Crown, LogOut, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { AscendLogo } from './AscendLogo';
 
 interface NavbarProps {
   activeTab: 'assessment' | 'colleges' | 'launchpad' | 'profile';
@@ -33,15 +34,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between h-18">
           {/* Brand Logo */}
           <div
-            className="flex items-center gap-3 cursor-pointer select-none"
+            className="flex items-center gap-3 cursor-pointer select-none group"
             onClick={() => setActiveTab('assessment')}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-800 text-white flex items-center justify-center shadow-md shadow-indigo-100">
-              <Sparkles className="w-5 h-5 text-amber-300" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-indigo-800 text-white flex items-center justify-center shadow-md shadow-indigo-100 p-1.5 transition-transform group-hover:scale-105">
+              <AscendLogo className="w-7 h-7 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-xl tracking-tight text-slate-900">Ascend</span>
+                <span className="font-extrabold text-xl tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">Ascend</span>
                 <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
                   Student Guidance
                 </span>

@@ -18,7 +18,12 @@ import {
   HelpCircle,
   Flame,
   Layers,
-  Users
+  Users,
+  CompassIcon,
+  Shield,
+  Award,
+  GitBranch,
+  Star
 } from 'lucide-react';
 import { AssessmentResult, RecommendedCareer } from '../types';
 import confetti from 'canvas-confetti';
@@ -43,7 +48,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
   React.useEffect(() => {
     try {
       confetti({
-        particleCount: 35,
+        particleCount: 40,
         spread: 60,
         origin: { y: 0.6 }
       });
@@ -51,25 +56,30 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
   }, []);
 
   const handleShareOrCopy = () => {
-    const text = `Ascend Student Identity Profile: ${result.archetype} - "${result.archetypeTagline}". Top Career: ${result.recommendedCareers[0]?.title}`;
+    const text = `Ascend Identity Profile: ${result.archetype} - "${result.archetypeTagline}". Primary Domains: ${(result.strongestInterestAreas || []).join(', ')}. Top Career: ${result.recommendedCareers[0]?.title}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const riasecList = [
-    { key: 'realistic', label: 'Realistic (Hands-on & Systems)', score: result.riasecScores?.realistic || 70, color: 'bg-emerald-500' },
-    { key: 'investigative', label: 'Investigative (Rigor & Analysis)', score: result.riasecScores?.investigative || 85, color: 'bg-indigo-600' },
-    { key: 'artistic', label: 'Artistic (Creative Synthesis)', score: result.riasecScores?.artistic || 75, color: 'bg-pink-500' },
-    { key: 'social', label: 'Social (Human Guidance)', score: result.riasecScores?.social || 60, color: 'bg-sky-500' },
-    { key: 'enterprising', label: 'Enterprising (Strategy & Impact)', score: result.riasecScores?.enterprising || 65, color: 'bg-amber-500' },
-    { key: 'conventional', label: 'Conventional (Precision & Order)', score: result.riasecScores?.conventional || 55, color: 'bg-teal-600' }
+    { key: 'realistic', label: 'Realistic (Hands-on & Practical Craft)', score: result.riasecScores?.realistic || 65, color: 'bg-emerald-500' },
+    { key: 'investigative', label: 'Investigative (Rigor & Intellectual Analysis)', score: result.riasecScores?.investigative || 85, color: 'bg-indigo-600' },
+    { key: 'artistic', label: 'Artistic (Creative Synthesis & Expression)', score: result.riasecScores?.artistic || 75, color: 'bg-pink-500' },
+    { key: 'social', label: 'Social (Human Guidance & Healing)', score: result.riasecScores?.social || 70, color: 'bg-sky-500' },
+    { key: 'enterprising', label: 'Enterprising (Strategy & Enterprise)', score: result.riasecScores?.enterprising || 65, color: 'bg-amber-500' },
+    { key: 'conventional', label: 'Conventional (Precision & Systematic Order)', score: result.riasecScores?.conventional || 55, color: 'bg-teal-600' }
   ];
 
-  // Safeguard arrays if undefined in legacy records
-  const corePassions = result.corePassions || ['Building interactive systems', 'Creative problem-solving', 'Understanding how things work'];
-  const curiosityDrivers = result.curiosityDrivers || ['First-principles deconstruction', 'Hands-on experimentation', 'User impact'];
-  const problemsToSolve = result.problemsToSolve || ['Creating accessible technological leverage', 'Improving real-world workflows'];
+  // Safeguard arrays
+  const strongestInterests = result.strongestInterestAreas || ['Arts & Creative Expression', 'Humanities & Culture'];
+  const secondaryInterests = result.secondaryInterestAreas || ['Social Sciences', 'Life Sciences'];
+  const corePassions = result.corePassions || ['Exploring creative pursuits', 'Understanding human behavior', 'Meaningful community impact'];
+  const curiosityDrivers = result.curiosityDrivers || ['First-principles inquiry', 'Understanding motives and patterns'];
+  const problemsToSolve = result.problemsToSolve || ['Expanding human potential', 'Empowering communities through creative and practical solutions'];
+  const coreValues = result.coreValues || ['Creative Autonomy', 'Human Compassion', 'Lifelong Mastery'];
+  const skillsToDevelop = result.skillsToDevelop || ['Portfolio Curation', 'Domain Fundamentals', 'Cross-Disciplinary Synthesis'];
+  const alternativePaths = result.alternativePaths || [];
 
   return (
     <div className="space-y-8 animate-fade-in text-slate-800">
@@ -79,9 +89,9 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/70 border border-indigo-200 text-indigo-800 text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Genuine Identity Profile</span>
+              <span>Multi-Domain Identity Profile</span>
               <span className="text-slate-300">·</span>
-              <span className="text-slate-600">Individual Passions &amp; Aspirations</span>
+              <span className="text-slate-600">All Academic &amp; Creative Disciplines</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900">
@@ -95,6 +105,33 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">
               {result.summary}
             </p>
+
+            {/* Primary & Secondary Interest Domains Pills */}
+            <div className="pt-2 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-slate-700">Primary Domains:</span>
+              {strongestInterests.map((interest, idx) => (
+                <span
+                  key={idx}
+                  className="text-xs px-3 py-1 rounded-xl bg-white text-indigo-800 font-bold border border-indigo-200 shadow-2xs"
+                >
+                  {interest}
+                </span>
+              ))}
+              {secondaryInterests.length > 0 && (
+                <>
+                  <span className="text-slate-300">|</span>
+                  <span className="text-xs font-medium text-slate-500">Secondary:</span>
+                  {secondaryInterests.map((interest, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-600 font-medium border border-slate-200"
+                    >
+                      {interest}
+                    </span>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
@@ -110,7 +147,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
               className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Retake Assessment</span>
+              <span>Retake 25 Questions</span>
             </button>
           </div>
         </div>
@@ -147,7 +184,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
         </div>
       )}
 
-      {/* Grid: What You Genuinely Love & Individual Thinking Style */}
+      {/* Grid: What You Genuinely Love & Flexible Thinking Style */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Section 1: Genuine Passions & Curiosity Drivers */}
         <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-5">
@@ -197,7 +234,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
             <div>
               <p className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
                 <Target className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Problems You Want to Tackle:</span>
+                <span>Missions &amp; Challenges You Care About:</span>
               </p>
               <ul className="text-xs text-slate-600 space-y-1.5 pl-1">
                 {problemsToSolve.map((problem, i) => (
@@ -211,7 +248,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
           </div>
         </div>
 
-        {/* Section 2: Flexible Thinking Style & Rhythm (No rigid personality labels) */}
+        {/* Section 2: Flexible Thinking Style & Core Values (No rigid personality boxes) */}
         <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2.5 mb-3">
@@ -219,8 +256,8 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
                 <Brain className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Individual Thinking Style</h3>
-                <p className="text-xs text-slate-500">Flexible cognitive tendencies — not rigid personality boxes</p>
+                <h3 className="text-sm font-bold text-slate-900">Individual Thinking Style &amp; Values</h3>
+                <p className="text-xs text-slate-500">Flexible cognitive tendencies — not rigid personality labels</p>
               </div>
             </div>
 
@@ -228,14 +265,14 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2 mb-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold text-slate-800">
-                  {result.thinkingStyle?.approach || 'Analytical Experimenter'}
+                  {result.thinkingStyle?.approach || 'Analytical & Imaginative Explorer'}
                 </span>
                 <span className="text-indigo-600 text-[11px] font-semibold">
                   Cognitive Blend
                 </span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                {result.thinkingStyle?.description || result.workStyle?.problemSolvingApproach || 'You combine creative intuition with structured validation.'}
+                {result.thinkingStyle?.description || result.workStyle?.problemSolvingApproach || 'You combine creative intuition with structured evaluation.'}
               </p>
             </div>
 
@@ -258,6 +295,24 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
               </div>
             )}
 
+            {/* Core Values */}
+            <div className="space-y-1.5 mb-3">
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 text-amber-500" />
+                <span>What Matters Most in Life &amp; Work:</span>
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {coreValues.map((val, i) => (
+                  <span
+                    key={i}
+                    className="text-xs px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-medium"
+                  >
+                    {val}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             {/* Collaboration Rhythm */}
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
               <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
@@ -265,68 +320,83 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
                 <span>Collaboration Dynamic:</span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                {result.thinkingStyle?.collaborationVibe || result.workStyle?.collaborationPreference || 'Balanced independent focus with high-signal teamwork.'}
+                {result.thinkingStyle?.collaborationVibe || result.workStyle?.collaborationPreference || 'Balanced independent craft with purposeful group alignment.'}
               </p>
             </div>
           </div>
 
-          {/* Core Strengths */}
-          <div className="pt-2">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Natural Strengths</p>
-            <div className="flex flex-wrap gap-1.5">
-              {result.strengths.slice(0, 4).map((s, i) => (
-                <span
-                  key={i}
-                  className="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-100 font-medium"
-                >
-                  {s}
-                </span>
-              ))}
+          {/* Strengths & Skills to Develop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div>
+              <p className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-1.5">Current Strengths</p>
+              <div className="flex flex-wrap gap-1">
+                {result.strengths.slice(0, 3).map((s, i) => (
+                  <span
+                    key={i}
+                    className="text-[11px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-100 font-medium"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[11px] font-bold text-indigo-800 uppercase tracking-wider mb-1.5">Skills to Develop</p>
+              <div className="flex flex-wrap gap-1">
+                {skillsToDevelop.slice(0, 3).map((g, i) => (
+                  <span
+                    key={i}
+                    className="text-[11px] px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100 font-medium"
+                  >
+                    {g}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Toggleable Vocational Spectrum (Holland RIASEC as optional reference) */}
-      <div className="rounded-3xl bg-white border border-slate-200 p-5 shadow-xs">
-        <button
-          onClick={() => setShowVocationalDetails(!showVocationalDetails)}
-          className="w-full flex items-center justify-between text-left text-xs text-slate-600 hover:text-slate-900 font-medium"
-        >
-          <span className="flex items-center gap-2">
-            <Compass className="w-4 h-4 text-indigo-600" />
-            <span className="font-bold text-slate-800">View Holland RIASEC Vocational Dimensions</span>
-            <span className="text-slate-400">· (Standard industry reference spectrum)</span>
-          </span>
-          <span className="text-indigo-600 font-semibold">
-            {showVocationalDetails ? 'Hide Details' : 'Expand Details'}
-          </span>
-        </button>
-
-        {showVocationalDetails && (
-          <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {riasecList.map(item => (
-                <div key={item.key} className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-700 font-semibold">{item.label}</span>
-                    <span className="text-slate-900 font-bold font-mono">{item.score}%</span>
-                  </div>
-                  <div className="w-full h-1.5 rounded-full bg-slate-200 overflow-hidden">
-                    <div
-                      className={`h-full rounded-full ${item.color}`}
-                      style={{ width: `${item.score}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+      {/* Alternative Paths (Acknowledging Multi-Disciplinary Passions & Uncertainty) */}
+      {alternativePaths.length > 0 && (
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-violet-50 text-violet-700 border border-violet-100">
+                <GitBranch className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Alternative &amp; Cross-Disciplinary Trajectories</h3>
+                <p className="text-xs text-slate-500">Acknowledging multi-disciplinary interests and keeping options open</p>
+              </div>
             </div>
-            <p className="text-[11px] text-slate-500 italic">
-              *Used as a loose vocational affinity indicator, not a deterministic label.
-            </p>
+            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
+              Flexible Exploration
+            </span>
           </div>
-        )}
-      </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+            {alternativePaths.map((path, idx) => (
+              <div
+                key={idx}
+                className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5 text-left"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-violet-600" />
+                  <h4 className="text-sm font-bold text-slate-900">{path.title}</h4>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {path.description}
+                </p>
+                <p className="text-[11px] text-violet-700 pt-1 font-medium">
+                  <span className="font-bold">Why consider this:</span> {path.reason}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Recommended Career Trajectories */}
       <div className="space-y-4">
@@ -334,14 +404,14 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
           <div>
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-indigo-600" />
-              <span>Recommended Career Trajectories</span>
+              <span>Recommended Diverse Career Trajectories</span>
             </h2>
             <p className="text-xs text-slate-500">
-              Grounded in what you love doing, with explicit explanations and practical mini-simulations.
+              Grounded in what you love doing across all academic, creative, professional, and vocational domains.
             </p>
           </div>
           <span className="text-xs text-slate-500">
-            Select a career below to view details and try the weekend simulation
+            Click any career to inspect details and try the weekend simulation
           </span>
         </div>
 
@@ -440,7 +510,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 uppercase tracking-wider">
                     <PlayCircle className="w-4 h-4 text-emerald-600" />
-                    <span>Practical Career Simulation (Test Your Interest)</span>
+                    <span>Practical Career Simulation (Test Your Interest Before Committing)</span>
                   </div>
                   <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
                     Mini-Project
@@ -487,7 +557,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
         )}
       </div>
 
-      {/* Recommended College Majors */}
+      {/* Recommended College Majors & Pathways */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <div>
@@ -496,7 +566,7 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
               <span>Recommended College Majors &amp; Pathways</span>
             </h2>
             <p className="text-xs text-slate-500">
-              Undergraduate degree pathways tailored to nurture your genuine interests.
+              Undergraduate degree pathways tailored to nurture your genuine interests across universities.
             </p>
           </div>
 
@@ -544,6 +614,47 @@ export const IdentityProfileView: React.FC<IdentityProfileViewProps> = ({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Toggleable Vocational Spectrum (Holland RIASEC as optional reference) */}
+      <div className="rounded-3xl bg-white border border-slate-200 p-5 shadow-xs">
+        <button
+          onClick={() => setShowVocationalDetails(!showVocationalDetails)}
+          className="w-full flex items-center justify-between text-left text-xs text-slate-600 hover:text-slate-900 font-medium"
+        >
+          <span className="flex items-center gap-2">
+            <Compass className="w-4 h-4 text-indigo-600" />
+            <span className="font-bold text-slate-800">View Holland RIASEC Vocational Dimensions</span>
+            <span className="text-slate-400">· (Standard industry reference spectrum)</span>
+          </span>
+          <span className="text-indigo-600 font-semibold">
+            {showVocationalDetails ? 'Hide Details' : 'Expand Details'}
+          </span>
+        </button>
+
+        {showVocationalDetails && (
+          <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {riasecList.map(item => (
+                <div key={item.key} className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-slate-700 font-semibold">{item.label}</span>
+                    <span className="text-slate-900 font-bold font-mono">{item.score}%</span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full bg-slate-200 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${item.color}`}
+                      style={{ width: `${item.score}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-[11px] text-slate-500 italic">
+              *Used as a loose vocational affinity indicator, not a deterministic label.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

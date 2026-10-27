@@ -1,5 +1,5 @@
 {
-  "name": "Ascent - AI Student Career & College Launchpad",
+  "name": "Ascend - AI Student Career & College Launchpad",
   "description": "Integrated AI-powered career discovery, college exploration, verified reviews, skill-gap analysis, and internship launchpad for students.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
